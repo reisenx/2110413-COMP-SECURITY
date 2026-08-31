@@ -1,0 +1,269 @@
+% ============================================================ %
+%  TEMPLATE BODY                                                %
+%  Styling lives in preamble.tex, per-document fields live in  %
+%  metadata.tex. This file is the actual document content.     %
+% ============================================================ %
+
+\input{preamble}
+\input{metadata}
+
+% PDF METADATA AND LINK STYLING (needs the fields from metadata.tex) %
+\definecolor{linkaccent}{HTML}{1a56db}
+\hypersetup{
+    pdftitle={\doctitle},
+    pdfauthor={\docauthor},
+    pdfsubject={\coursecode\ -- \coursename},
+    colorlinks=true,
+    linkcolor=linkaccent,
+    citecolor=linkaccent,
+    urlcolor=linkaccent,
+    bookmarksnumbered=true,
+}
+
+% DOCUMENT CONTENTS %
+\begin{document}
+
+    % ======================================================== %
+    % COVER PAGE                                                %
+    % ======================================================== %
+    \begin{titlepage}
+        \centering
+        \thispagestyle{empty}
+        \vspace*{4em}
+
+        {\scshape Assignment}
+
+        \vspace{3em}
+        {\Huge\bfseries \doctitle}
+        \vspace{1.5em}
+
+        \noindent\rule{0.6\textwidth}{0.5pt}
+        \vspace{1.5em}
+
+        {\large Assignment \assignmentnumber} \\[0.4em]
+        {\large \assignmentname}
+
+        \vfill
+
+        {\large \institution}
+        \vspace{1em}
+
+        {\large \docauthor}
+
+        \vspace{0.4em}
+        {\normalsize Student ID: \studentid}
+
+        % \vspace{1.5em}
+        % {\normalsize Instructor: \instructor \quad\textbar\quad Due: \duedate}
+
+        \vspace{2em}
+        {\normalsize \docdate}
+    \end{titlepage}
+
+    % ======================================================== %
+    % TABLE OF CONTENTS                                         %
+    % ======================================================== %
+    \tableofcontents
+    \thispagestyle{empty}
+    \clearpage
+
+    % ======================================================== %
+    % BODY (running header/footer active from here on)          %
+    % ======================================================== %
+    \pagenumbering{arabic}
+
+    \section{Introduction}
+
+        This document is Worralop Srichainont's personal \LaTeX\ template for university assignment reports.
+        The source is published in the \href{https://github.com/reisenx/LATEX-TEMPLATE}{GitHub repository}.
+        It supports a cover page with course and submission details, a running header/footer, a table of contents,
+        a small set of callout boxes, clean figures and tables, and syntax-highlighted code snippets via \texttt{minted}.
+        It also fully supports ภาษาไทย (Thai language) using the THSarabunPSK font.
+        You are free to use and modify this template without any restrictions.
+
+        \begin{notebox}[Note: file layout]
+            The template is split into three files: \texttt{preamble.tex} (packages and styling you rarely touch),
+            \texttt{metadata.tex} (the fields you edit for every new assignment: title, course, instructor, student ID,
+            due date), and \texttt{template.tex} (the actual content, this file). For lecture summaries, use the
+            sibling \texttt{lecture\_note/} folder instead, which has its own independent cover and styling.
+        \end{notebox}
+
+        \vspace{1em}
+
+        Before compiling this document, install the Pygments library required by the \texttt{minted} package:
+        \begin{codeblock}{bash}{}
+            pip install Pygments
+        \end{codeblock}
+
+        For your \LaTeX\ editor, \href{https://www.overleaf.com/}{\textbf{Overleaf}} is the easiest online option.
+        If you prefer to work locally, install \LaTeX\ via \href{https://miktex.org/download}{\textbf{MikTeX}}
+        and use an editor such as \href{https://code.visualstudio.com/}{\textbf{Visual Studio Code}} (with the LaTeX Workshop
+        extension) or \href{https://www.xm1math.net/texmaker/}{\textbf{TeXMaker}}.
+
+        To compile, select \textbf{XeLaTeX} as the compiler, or run:
+        \begin{codeblock}{bash}{}
+            xelatex -shell-escape -interaction=nonstopmode template.tex
+        \end{codeblock}
+
+    \section{Callout Boxes}
+
+        A small, muted set of callout boxes is available for flagging important content without cluttering the page.
+
+        \begin{defbox}
+            A \textbf{callout box} is a visually distinct block used to draw attention to a specific piece of content,
+            such as a definition, a worked example, or a warning, separate from the surrounding body text.
+        \end{defbox}
+
+        \begin{examplebox}
+            \texttt{\textbackslash begin\{examplebox\}} renders this box. Pass an optional argument to change the
+            title, e.g. \texttt{\textbackslash begin\{examplebox\}[Example: recursion]}.
+        \end{examplebox}
+
+        \begin{takeawaybox}
+            Use callout boxes sparingly. Reserve them for content you would circle in a printed handout, not for
+            every paragraph, so they keep their emphasis.
+        \end{takeawaybox}
+
+    \section{Figures and Tables}
+
+        Figures use \texttt{graphicx} with \texttt{caption} for numbering and \texttt{cleveref} for cross references,
+        and tables use \texttt{booktabs} rules instead of a full grid, so both stay clean on the page.
+
+        \begin{figure}[h]
+            \centering
+            \includegraphics[width=0.45\textwidth]{example-image-a}
+            \caption{Placeholder figure. Replace \texttt{example-image-a} with your own image path.}
+            \label{fig:placeholder}
+        \end{figure}
+
+        \Cref{fig:placeholder} shows a placeholder figure; \cref{tab:booktabs} shows a placeholder table.
+
+        \begin{table}[h]
+            \centering
+            \caption{Sample grading breakdown using \texttt{booktabs} rules.}
+            \label{tab:booktabs}
+            \begin{tabular}{lcc}
+                \toprule
+                \textbf{Component} & \textbf{Weight} & \textbf{Score} \\
+                \midrule
+                Assignments        & 30\%            & 28/30          \\
+                Midterm Exam       & 30\%            & 26/30          \\
+                Final Exam         & 40\%            & 37/40          \\
+                \bottomrule
+            \end{tabular}
+        \end{table}
+
+    \section{Lists}
+
+        \texttt{enumitem} controls list spacing globally, keeping lists airy but still compact enough to scan.
+
+        \begin{enumerate}
+            \item First step of a procedure.
+            \item Second step, with a nested list:
+                \begin{itemize}
+                    \item Supporting detail one.
+                    \item Supporting detail two.
+                \end{itemize}
+            \item Final step.
+        \end{enumerate}
+
+    \section{Mathematics}
+
+        Numbered displays can be cross-referenced with \texttt{cleveref}. For example, \cref{eq:quadratic}
+        gives the quadratic formula.
+
+        \begin{equation}
+            x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}
+            \label{eq:quadratic}
+        \end{equation}
+
+    \section{Text Formatting}
+        \subsection{Font Styles}
+            \LaTeX\ has various font styles, just like other document editors such as Microsoft Word.
+
+            \subsubsection{English}
+
+                \begin{table}[h]
+                    \centering
+                    \setlength{\extrarowheight}{2pt}
+                    \begin{tabular}{ll}
+                        \toprule
+                        \textbf{Command} & \textbf{Example} \\
+                        \midrule
+                        \texttt{text} & Normal text \\
+                        \texttt{\textbackslash textbf\{text\}} & \textbf{Bold text} \\
+                        \texttt{\textbackslash textit\{text\}} & \textit{Italic text} \\
+                        \texttt{\textbackslash emph\{text\}} & \emph{Emphasized} \\
+                        \texttt{\textbackslash underline\{text\}} & \underline{Underline} \\
+                        \texttt{\textbackslash textsc\{text\}} & \textsc{Small Caps} \\
+                        \texttt{\textbackslash texttt\{text\}} & \texttt{Typewriter family} \\
+                        \bottomrule
+                    \end{tabular}
+                \end{table}
+
+            \subsubsection{ภาษาไทย}
+
+                \begin{table}[h]
+                    \centering
+                    \setlength{\extrarowheight}{2pt}
+                    \begin{tabular}{ll}
+                        \toprule
+                        \textbf{Command} & \textbf{Example} \\
+                        \midrule
+                        \texttt{text} & ข้อความ \\
+                        \texttt{\textbackslash textbf\{text\}} & \textbf{ข้อความ} \\
+                        \texttt{\textbackslash textit\{text\}} & \textit{ข้อความ} \\
+                        \texttt{\textbackslash emph\{text\}} & \emph{ข้อความ} \\
+                        \texttt{\textbackslash underline\{text\}} & \underline{ข้อความ} \\
+                        \bottomrule
+                    \end{tabular}
+                \end{table}
+
+            \subsubsection{Sample Text}
+
+                In Bangkok, \textbf{everywhere you look} is amazing food. To sound like a local, say \textit{bhed nid noi}
+                (\textit{เผ็ดนิดหน่อย}), meaning \emph{a little bit spicy}. Navigate the city using \texttt{Google Maps}
+                or the \textsf{BTS Skytrain} (\textnormal{รถไฟฟ้า}). Wherever you go, remember: \underline{Sawatdee krap}
+                (\textnormal{สวัสดีครับ})!
+
+        \subsection{Font Size}
+
+            Font sizes are relative to the size declared in \texttt{\textbackslash documentclass}.
+
+            \begin{table}[h]
+                \centering
+                \setlength{\extrarowheight}{6pt}
+                \begin{tabular}{ll}
+                    \toprule
+                    \textbf{Command} & \textbf{Example} \\
+                    \midrule
+                    \texttt{\{\textbackslash small text\}} & {\small Small} \\
+                    \texttt{text} & Normal size \\
+                    \texttt{\{\textbackslash large text\}} & {\large large} \\
+                    \texttt{\{\textbackslash Large text\}} & {\Large Large} \\
+                    \texttt{\{\textbackslash LARGE text\}} & {\LARGE LARGE} \\
+                    \texttt{\{\textbackslash huge text\}} & {\huge huge} \\
+                    \bottomrule
+                \end{tabular}
+            \end{table}
+
+    \section{Code Snippets}
+
+        Code blocks use \texttt{minted} through a \texttt{tcolorbox} wrapper, styled as a GitHub-dark listing.
+
+        \begin{codeblock}{python}{example.py}
+            def greet(name: str) -> str:
+                return f"Sawatdee, {name}!"
+
+            print(greet("world"))
+        \end{codeblock}
+
+    \iftoggle{showbibliography}{
+        \section{References}
+            This template cites \cite{latex2e}, and recommends \cite{overleaf-learn} and \cite{freecodecamp-latex}
+            as further reading.
+
+            \printbibliography[heading=none]
+    }{}
+
+\end{document}
