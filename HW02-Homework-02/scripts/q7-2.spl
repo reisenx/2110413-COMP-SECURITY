@@ -1,0 +1,4 @@
+source="*access.log" ("Googlebot" OR "YandexBot" OR "NetcraftSurveyAgent")
+| rex "\"(?<ua>[^\"]+)\"\s+\d+\s*$"
+| stats count as hits by ua
+| sort - hits

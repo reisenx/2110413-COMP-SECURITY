@@ -1,0 +1,3 @@
+source="*access.log" ("Googlebot" OR "YandexBot" OR "NetcraftSurveyAgent")
+| stats count as hits by uri_path, status
+| sort - hits

@@ -1,0 +1,3 @@
+source="*access.log" status=404
+| stats count by uri_path
+| sort - count

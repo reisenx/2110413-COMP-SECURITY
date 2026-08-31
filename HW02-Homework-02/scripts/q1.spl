@@ -1,0 +1,3 @@
+source="*secure.log" "Failed password"
+| rex "from (?<src_ip>\S+) port"
+| stats dc(src_ip) as distinct_hackers count as attempts

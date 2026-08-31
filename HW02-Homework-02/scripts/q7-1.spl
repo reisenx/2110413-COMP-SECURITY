@@ -1,0 +1,3 @@
+source="*access.log" (useragent="*bot*" OR useragent="*Bot*" OR useragent="*crawler*" OR useragent="*Netcraft*")
+| stats count as hits by useragent
+| sort - hits

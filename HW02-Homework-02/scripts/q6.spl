@@ -1,0 +1,3 @@
+source="*access.log" ("/passwords.pdf" OR "/hidden/" OR "/rush/signals.zip" OR "/numa/numa.html")
+| stats count as attempts by uri_path
+| sort - attempts
