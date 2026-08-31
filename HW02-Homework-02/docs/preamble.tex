@@ -1,0 +1,162 @@
+% ============================================================ %
+%  PREAMBLE                                                     %
+%  Packages, fonts, spacing, and reusable macros only.          %
+%  Per-document content lives in metadata.tex and template.tex. %
+% ============================================================ %
+
+% DOCUMENT CLASS SETUP %
+\documentclass[12pt, a4paper]{article}
+
+% DOCUMENT PACKAGES %
+\usepackage[a4paper, margin=1in]{geometry}
+\usepackage{enumitem}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mathtools}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{hyperref}
+\usepackage[capitalize, noabbrev]{cleveref}
+\usepackage{csquotes}
+\usepackage{tocloft}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{mwe}                 % provides \includegraphics{example-image*} placeholders
+\usepackage{fancyhdr}
+\usepackage{etoolbox}            % powers the optional bibliography toggle
+
+% READABILITY / "AIRY" TYPOGRAPHY SETUP %
+\usepackage{setspace}
+\setstretch{1.15}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.6em plus 0.2em}
+\usepackage{titlesec}
+\titlespacing*{\section}{0pt}{2.4em}{1em}
+\titlespacing*{\subsection}{0pt}{1.8em}{0.8em}
+\titlespacing*{\subsubsection}{0pt}{1.4em}{0.6em}
+\setlist{itemsep=0.4em, topsep=0.6em, parsep=0pt}
+
+% FONT AND ENCODING SETUP %
+\usepackage{fontspec}
+\usepackage{polyglossia}
+\usepackage[Thai]{ucharclasses}
+\setdefaultlanguage{english}
+\setotherlanguage{thai}
+\setTransitionsFor{Thai}{\thaifont}{\normalfont}
+\newfontfamily{\thaifont}{THSarabun.ttf}[
+    Path=./fonts/,
+    BoldFont=THSarabunBold.ttf,
+    ItalicFont=THSarabunItalic.ttf,
+    BoldItalicFont=THSarabunBoldItalic.ttf,
+    Scale=1.23
+]
+\XeTeXlinebreaklocale "th"
+\XeTeXlinebreakskip = 0pt plus 1pt
+
+% BIBLIOGRAPHY (lightweight, optional per-document via \showbibliography) %
+% Must load after polyglossia.
+\usepackage[style=numeric, sorting=none]{biblatex}
+\addbibresource{references.bib}
+
+% CODE BLOCK PACKAGES %
+\usepackage{tcolorbox}
+\tcbuselibrary{minted, skins, breakable}
+
+% DEFINE GITHUB DARK THEME COLORS %
+\definecolor{ghback}{HTML}{0d1117}
+\definecolor{ghtext}{HTML}{c9d1d9}
+\definecolor{ghborder}{HTML}{30363d}
+
+% CODE BLOCK CONFIGURATION %
+\renewcommand{\theFancyVerbLine}{\textcolor{white!60!gray}{\scriptsize\arabic{FancyVerbLine}}}
+\newtcblisting{codeblock}[3][]{
+    enhanced,
+    breakable,
+    colback=ghback,
+    colframe=ghborder,
+    coltitle=ghtext,
+    colupper=ghtext,
+    fonttitle=\bfseries\small,
+    arc=3mm,
+    boxrule=0.5mm,
+    % PADDING SETTINGS %
+    left=25pt,
+    right=10pt,
+    top=5pt,
+    bottom=5pt,
+    % MINTED SETTINGS %
+    listing engine=minted,
+    listing only,
+    minted language=#2,
+    minted options={
+        linenos,
+        numbersep=5pt,
+        fontsize=\footnotesize,
+        breaklines=true,
+        breakanywhere=true,
+        autogobble,
+        style=monokai,
+    },
+    title={#3},
+    #1
+}
+
+% SEMANTIC CALLOUT BOXES %
+% Kept to a small, muted set on purpose: Note, Definition, Example, Takeaway.
+% Each takes an optional argument to override the default title text, e.g.
+%   \begin{notebox}[Note: edge case] ... \end{notebox}
+\newtcolorbox{notebox}[1][Note]{
+    enhanced, breakable,
+    colback=blue!4, colframe=blue!45!black,
+    colbacktitle=blue!45!black, coltitle=white,
+    fonttitle=\bfseries, title=#1,
+    arc=1.5mm, boxrule=0.4mm,
+    left=8pt, right=8pt, top=5pt, bottom=5pt,
+}
+\newtcolorbox{defbox}[1][Definition]{
+    enhanced, breakable,
+    colback=black!3, colframe=black!55,
+    colbacktitle=black!55, coltitle=white,
+    fonttitle=\bfseries, title=#1,
+    arc=1.5mm, boxrule=0.4mm,
+    left=8pt, right=8pt, top=5pt, bottom=5pt,
+}
+\newtcolorbox{examplebox}[1][Example]{
+    enhanced, breakable,
+    colback=green!4, colframe=green!30!black,
+    colbacktitle=green!30!black, coltitle=white,
+    fonttitle=\bfseries, title=#1,
+    arc=1.5mm, boxrule=0.4mm,
+    left=8pt, right=8pt, top=5pt, bottom=5pt,
+}
+\newtcolorbox{takeawaybox}[1][Key Takeaway]{
+    enhanced, breakable,
+    colback=orange!5, colframe=orange!55!black,
+    colbacktitle=orange!55!black, coltitle=white,
+    fonttitle=\bfseries, title=#1,
+    arc=1.5mm, boxrule=0.4mm,
+    left=8pt, right=8pt, top=5pt, bottom=5pt,
+}
+
+% DISABLE PAGE NUMBER IN TABLE OF CONTENTS %
+\tocloftpagestyle{empty}
+
+% RUNNING HEADER / FOOTER (body pages only; cover and TOC stay empty) %
+% Left = course code, center = current section, right = author.
+\pagestyle{fancy}
+\setlength{\headheight}{14pt}
+\fancyhf{}
+\fancyhead[L]{\small\scshape \coursecode \ \coursename}
+\fancyhead[C]{\small\itshape \rightmark}
+\fancyhead[R]{\small \docauthor}
+\fancyfoot[C]{\small\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+\fancypagestyle{plain}{
+    \fancyhf{}
+    \fancyfoot[C]{\small\thepage}
+    \renewcommand{\headrulewidth}{0pt}
+}
