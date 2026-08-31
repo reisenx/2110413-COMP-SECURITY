@@ -20,6 +20,11 @@
     bookmarksnumbered=true,
 }
 
+% Drop the automatic "N.N" subsection number from the running header mark
+% (\rightmark) so long subsection titles don't collide with the course-code
+% header on the left; the number still prints normally in the heading itself.
+\renewcommand{\subsectionmark}[1]{\markright{#1}}
+
 % DOCUMENT CONTENTS %
 \begin{document}
 
@@ -74,196 +79,286 @@
 
     \section{Introduction}
 
-        This document is Worralop Srichainont's personal \LaTeX\ template for university assignment reports.
-        The source is published in the \href{https://github.com/reisenx/LATEX-TEMPLATE}{GitHub repository}.
-        It supports a cover page with course and submission details, a running header/footer, a table of contents,
-        a small set of callout boxes, clean figures and tables, and syntax-highlighted code snippets via \texttt{minted}.
-        It also fully supports ภาษาไทย (Thai language) using the THSarabunPSK font.
-        You are free to use and modify this template without any restrictions.
+        For this assignment, we act as a member of the security/incident management team of a company named
+        buttercup. The company's infrastructure consists of a mail server \texttt{mailsv} and three web servers
+        \texttt{www1}, \texttt{www2}, \texttt{www3}. We are given the \texttt{secure.log} (authentication) and
+        \texttt{access.log} (web access) files from these servers, and our job is to find out whether anyone is
+        trying to hack, scan, or access protected information on them. Reading these logs line by line would be
+        painful, so instead of writing our own parsing code, we use \textbf{Splunk} to search and aggregate the
+        data.
 
-        \begin{notebox}[Note: file layout]
-            The template is split into three files: \texttt{preamble.tex} (packages and styling you rarely touch),
-            \texttt{metadata.tex} (the fields you edit for every new assignment: title, course, instructor, student ID,
-            due date), and \texttt{template.tex} (the actual content, this file). For lecture summaries, use the
-            sibling \texttt{lecture\_note/} folder instead, which has its own independent cover and styling.
+        We already imported the provided \texttt{tutorialdata.zip} into Splunk as a single upload (so every event
+        is indexed exactly once), and every search below is run with the time range set to \textbf{All time}, since
+        the events are not from the last 24 hours.
+
+    \section{Part I: Suspicious Login Activity}
+
+        On Linux servers, \texttt{secure.log} contains the authentication events, so this is where we look first
+        to see if someone is trying to log in to a server they should not.
+
+        \subsection[Hackers]{Q1: How Many Hackers, How Many Attempts}
+
+            \begin{defbox}[Definition: hacker and attempt]
+                We define a \textbf{hacker} as a distinct source IP address that produced at least one
+                \texttt{Failed password} line in \texttt{secure.log}. Each such line is counted as one
+                \textbf{attempt}. This way, one hacker trying 200 times is still one hacker, but contributes 200
+                attempts.
+            \end{defbox}
+
+            To count them, we search for \texttt{Failed password} lines, extract the source IP with \texttt{rex},
+            then count the distinct IPs and the total number of matching lines.
+
+            \begin{codeblock}{text}{Count Distinct Attackers}
+                source="*secure.log" "Failed password"
+                | rex "from (?<src_ip>\S+) port"
+                | stats dc(src_ip) as distinct_hackers count as attempts
+            \end{codeblock}
+
+            \begin{figure}[h]
+                \centering
+                \includegraphics[width=0.9\linewidth]{images/q1.png}
+                \caption{Distinct attacking IP addresses and total failed-password attempts.}
+                \label{fig:q1}
+            \end{figure}
+
+            \Cref{fig:q1} shows that there are \textbf{185} distinct source IPs, so we count \textbf{185 hackers}
+            trying to get access to our servers, with \textbf{33,253 attempts} in total.
+
+        \subsection[Attack Time]{Q2: What Time Do Hackers Appear}
+
+            We bucket every \texttt{Failed password} event by hour of day and count how many attempts fall in
+            each bucket.
+
+            \begin{codeblock}{text}{Attempts by Hour}
+                source="*secure.log" "Failed password"
+                | eval hour=strftime(_time, "%H:00-%H:59")
+                | stats count as attempts by hour
+                | sort - attempts
+            \end{codeblock}
+
+            \begin{figure}[h]
+                \centering
+                \includegraphics[width=0.9\linewidth]{images/q2.png}
+                \caption{Failed-password attempts grouped by hour of day.}
+                \label{fig:q2}
+            \end{figure}
+
+            \Cref{fig:q2} shows all 33,253 attempts falling into a single hour bucket, \textbf{20:00--20:59}. So,
+            based on this data, hackers appear to try to hack our servers during the \textbf{20:00--20:59} hour.
+
+        \subsection[Busiest Server]{Q3: Which Server Had the Most Attempts}
+
+            \begin{notebox}[Note: the \texttt{host} field is not reliable here]
+                Our first instinct was to group by Splunk's \texttt{host} field, since we set the input to use
+                ``Segment in path'' when uploading the data. This did not work as expected.
+            \end{notebox}
+
+            \begin{codeblock}{text}{Attempts by Host (does not work)}
+                source="*secure.log" "Failed password"
+                | stats count as attempts by host
+                | sort - attempts
+            \end{codeblock}
+
+            \begin{figure}[h]
+                \centering
+                \includegraphics[width=0.9\linewidth]{images/q3-2.png}
+                \caption{Grouping by \texttt{host} puts every event under a single \texttt{127.0.0.1} host.}
+                \label{fig:q3-2}
+            \end{figure}
+
+            \Cref{fig:q3-2} shows all 33,253 events under one host, \texttt{127.0.0.1}, which is just the machine
+            we uploaded the data from, not the actual server name. So instead of relying on \texttt{host}, we
+            parse the server name straight out of the \texttt{source} file path with \texttt{rex}.
+
+            \begin{codeblock}{text}{Attempts by Server}
+                source="*secure.log" "Failed password"
+                | rex field=source "/(?<server>mailsv|www1|www2|www3)/secure\.log"
+                | stats count as attempts by server
+                | sort - attempts
+            \end{codeblock}
+
+            \begin{figure}[h]
+                \centering
+                \includegraphics[width=0.9\linewidth]{images/q3-1.png}
+                \caption{Failed-password attempts grouped by server, parsed from the source path.}
+                \label{fig:q3-1}
+            \end{figure}
+
+            \Cref{fig:q3-1} shows \textbf{www1} with 8,798 attempts, ahead of www3 (8,267), mailsv (8,154), and
+            www2 (8,034). So \textbf{www1} had the most attempts.
+
+            \begin{takeawaybox}
+                www1 is the server under the heaviest brute-force pressure, but the difference across the four
+                servers is small; attackers are not favoring one server much over the others.
+            \end{takeawaybox}
+
+        \subsection[Top Account]{Q4: Most Popular Account}
+
+            We extract the account name from the same \texttt{Failed password} lines and take the top 5 by
+            attempt count.
+
+            \begin{codeblock}{text}{Top Attempted Accounts}
+                source="*secure.log" "Failed password"
+                | rex "Failed password for (?:invalid user )?(?<account>\S+) from"
+                | stats count as attempts by account
+                | sort - attempts
+                | head 5
+            \end{codeblock}
+
+            \begin{figure}[h]
+                \centering
+                \includegraphics[width=0.9\linewidth]{images/q4.png}
+                \caption{Top 5 account names used in failed-password attempts.}
+                \label{fig:q4}
+            \end{figure}
+
+            \Cref{fig:q4} shows \textbf{root} as the most popular account (1,493 attempts), followed by
+            administrator (1,020), admin (938), operator (923), and mail (753). Hackers are mostly guessing
+            generic admin-sounding usernames rather than real people's accounts.
+
+    \section{Part II: Sensitive Files on Web Servers}
+
+        On web servers, \texttt{access.log} contains the web access events. Following the
+        \href{https://zeltser.com/security-incident-log-review-checklist/}{security incident log review checklist},
+        we look for excessive access attempts to non-existent files and error code 404 on files that are not
+        part of our actual shop.
+
+        \begin{notebox}[Note: what we are looking for]
+            The checklist for web servers specifically calls out ``excessive access attempts to non-existent
+            files'' and ``access to extensions you have not implemented''. In this data set, we found four such
+            paths, all returning \textbf{404}: \texttt{/passwords.pdf}, \texttt{/hidden/anna\_nicole.html},
+            \texttt{/rush/signals.zip}, and \texttt{/numa/numa.html}. None of these belong to the real
+            \texttt{buttercupgames.com} storefront, which only serves \texttt{/cart.do}, \texttt{/product.screen},
+            \texttt{/category.screen}, and similar pages.
         \end{notebox}
 
-        \vspace{1em}
+        \subsection[Sensitive Files]{Q5: Attempts to Access Sensitive Information}
 
-        Before compiling this document, install the Pygments library required by the \texttt{minted} package:
-        \begin{codeblock}{bash}{}
-            pip install Pygments
-        \end{codeblock}
+            First, we count how many times any of the four suspicious paths were requested.
 
-        For your \LaTeX\ editor, \href{https://www.overleaf.com/}{\textbf{Overleaf}} is the easiest online option.
-        If you prefer to work locally, install \LaTeX\ via \href{https://miktex.org/download}{\textbf{MikTeX}}
-        and use an editor such as \href{https://code.visualstudio.com/}{\textbf{Visual Studio Code}} (with the LaTeX Workshop
-        extension) or \href{https://www.xm1math.net/texmaker/}{\textbf{TeXMaker}}.
+            \begin{codeblock}{text}{Count Sensitive-Path Probes}
+                source="*access.log" ("/passwords.pdf" OR "/hidden/" OR "/rush/signals.zip" OR "/numa/numa.html")
+                | stats count as attempts
+            \end{codeblock}
 
-        To compile, select \textbf{XeLaTeX} as the compiler, or run:
-        \begin{codeblock}{bash}{}
-            xelatex -shell-escape -interaction=nonstopmode template.tex
-        \end{codeblock}
-
-    \section{Callout Boxes}
-
-        A small, muted set of callout boxes is available for flagging important content without cluttering the page.
-
-        \begin{defbox}
-            A \textbf{callout box} is a visually distinct block used to draw attention to a specific piece of content,
-            such as a definition, a worked example, or a warning, separate from the surrounding body text.
-        \end{defbox}
-
-        \begin{examplebox}
-            \texttt{\textbackslash begin\{examplebox\}} renders this box. Pass an optional argument to change the
-            title, e.g. \texttt{\textbackslash begin\{examplebox\}[Example: recursion]}.
-        \end{examplebox}
-
-        \begin{takeawaybox}
-            Use callout boxes sparingly. Reserve them for content you would circle in a printed handout, not for
-            every paragraph, so they keep their emphasis.
-        \end{takeawaybox}
-
-    \section{Figures and Tables}
-
-        Figures use \texttt{graphicx} with \texttt{caption} for numbering and \texttt{cleveref} for cross references,
-        and tables use \texttt{booktabs} rules instead of a full grid, so both stay clean on the page.
-
-        \begin{figure}[h]
-            \centering
-            \includegraphics[width=0.45\textwidth]{example-image-a}
-            \caption{Placeholder figure. Replace \texttt{example-image-a} with your own image path.}
-            \label{fig:placeholder}
-        \end{figure}
-
-        \Cref{fig:placeholder} shows a placeholder figure; \cref{tab:booktabs} shows a placeholder table.
-
-        \begin{table}[h]
-            \centering
-            \caption{Sample grading breakdown using \texttt{booktabs} rules.}
-            \label{tab:booktabs}
-            \begin{tabular}{lcc}
-                \toprule
-                \textbf{Component} & \textbf{Weight} & \textbf{Score} \\
-                \midrule
-                Assignments        & 30\%            & 28/30          \\
-                Midterm Exam       & 30\%            & 26/30          \\
-                Final Exam         & 40\%            & 37/40          \\
-                \bottomrule
-            \end{tabular}
-        \end{table}
-
-    \section{Lists}
-
-        \texttt{enumitem} controls list spacing globally, keeping lists airy but still compact enough to scan.
-
-        \begin{enumerate}
-            \item First step of a procedure.
-            \item Second step, with a nested list:
-                \begin{itemize}
-                    \item Supporting detail one.
-                    \item Supporting detail two.
-                \end{itemize}
-            \item Final step.
-        \end{enumerate}
-
-    \section{Mathematics}
-
-        Numbered displays can be cross-referenced with \texttt{cleveref}. For example, \cref{eq:quadratic}
-        gives the quadratic formula.
-
-        \begin{equation}
-            x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}
-            \label{eq:quadratic}
-        \end{equation}
-
-    \section{Text Formatting}
-        \subsection{Font Styles}
-            \LaTeX\ has various font styles, just like other document editors such as Microsoft Word.
-
-            \subsubsection{English}
-
-                \begin{table}[h]
-                    \centering
-                    \setlength{\extrarowheight}{2pt}
-                    \begin{tabular}{ll}
-                        \toprule
-                        \textbf{Command} & \textbf{Example} \\
-                        \midrule
-                        \texttt{text} & Normal text \\
-                        \texttt{\textbackslash textbf\{text\}} & \textbf{Bold text} \\
-                        \texttt{\textbackslash textit\{text\}} & \textit{Italic text} \\
-                        \texttt{\textbackslash emph\{text\}} & \emph{Emphasized} \\
-                        \texttt{\textbackslash underline\{text\}} & \underline{Underline} \\
-                        \texttt{\textbackslash textsc\{text\}} & \textsc{Small Caps} \\
-                        \texttt{\textbackslash texttt\{text\}} & \texttt{Typewriter family} \\
-                        \bottomrule
-                    \end{tabular}
-                \end{table}
-
-            \subsubsection{ภาษาไทย}
-
-                \begin{table}[h]
-                    \centering
-                    \setlength{\extrarowheight}{2pt}
-                    \begin{tabular}{ll}
-                        \toprule
-                        \textbf{Command} & \textbf{Example} \\
-                        \midrule
-                        \texttt{text} & ข้อความ \\
-                        \texttt{\textbackslash textbf\{text\}} & \textbf{ข้อความ} \\
-                        \texttt{\textbackslash textit\{text\}} & \textit{ข้อความ} \\
-                        \texttt{\textbackslash emph\{text\}} & \emph{ข้อความ} \\
-                        \texttt{\textbackslash underline\{text\}} & \underline{ข้อความ} \\
-                        \bottomrule
-                    \end{tabular}
-                \end{table}
-
-            \subsubsection{Sample Text}
-
-                In Bangkok, \textbf{everywhere you look} is amazing food. To sound like a local, say \textit{bhed nid noi}
-                (\textit{เผ็ดนิดหน่อย}), meaning \emph{a little bit spicy}. Navigate the city using \texttt{Google Maps}
-                or the \textsf{BTS Skytrain} (\textnormal{รถไฟฟ้า}). Wherever you go, remember: \underline{Sawatdee krap}
-                (\textnormal{สวัสดีครับ})!
-
-        \subsection{Font Size}
-
-            Font sizes are relative to the size declared in \texttt{\textbackslash documentclass}.
-
-            \begin{table}[h]
+            \begin{figure}[h]
                 \centering
-                \setlength{\extrarowheight}{6pt}
-                \begin{tabular}{ll}
-                    \toprule
-                    \textbf{Command} & \textbf{Example} \\
-                    \midrule
-                    \texttt{\{\textbackslash small text\}} & {\small Small} \\
-                    \texttt{text} & Normal size \\
-                    \texttt{\{\textbackslash large text\}} & {\large large} \\
-                    \texttt{\{\textbackslash Large text\}} & {\Large Large} \\
-                    \texttt{\{\textbackslash LARGE text\}} & {\LARGE LARGE} \\
-                    \texttt{\{\textbackslash huge text\}} & {\huge huge} \\
-                    \bottomrule
-                \end{tabular}
-            \end{table}
+                \includegraphics[width=0.9\linewidth]{images/q5-1.png}
+                \caption{Total attempts to access the four suspicious paths.}
+                \label{fig:q5-1}
+            \end{figure}
 
-    \section{Code Snippets}
+            \Cref{fig:q5-1} shows \textbf{284} attempts. As broader supporting evidence, we also look at every
+            404 response on the web servers, not just our four suspicious paths.
 
-        Code blocks use \texttt{minted} through a \texttt{tcolorbox} wrapper, styled as a GitHub-dark listing.
+            \begin{codeblock}{text}{All 404 Paths}
+                source="*access.log" status=404
+                | stats count by uri_path
+                | sort - count
+            \end{codeblock}
 
-        \begin{codeblock}{python}{example.py}
-            def greet(name: str) -> str:
-                return f"Sawatdee, {name}!"
+            \begin{figure}[h]
+                \centering
+                \includegraphics[width=0.9\linewidth]{images/q5-2.png}
+                \caption{Every path that returned a 404, sorted by count.}
+                \label{fig:q5-2}
+            \end{figure}
 
-            print(greet("world"))
-        \end{codeblock}
+            \Cref{fig:q5-2} shows 690 total 404 events across all paths, with our four suspicious paths
+            (\texttt{/hidden/anna\_nicole.html}, \texttt{/numa/numa.html}, \texttt{/rush/signals.zip},
+            \texttt{/passwords.pdf}) all sitting near the top of the list. So yes, we can find attempts to get
+            access to sensitive information, and there were \textbf{284} such attempts.
 
-    \iftoggle{showbibliography}{
-        \section{References}
-            This template cites \cite{latex2e}, and recommends \cite{overleaf-learn} and \cite{freecodecamp-latex}
-            as further reading.
+        \subsection[Targeted Files]{Q6: What Resource Are Hackers Looking For}
 
-            \printbibliography[heading=none]
-    }{}
+            \begin{codeblock}{text}{Sensitive-Path Probes by File}
+                source="*access.log" ("/passwords.pdf" OR "/hidden/" OR "/rush/signals.zip" OR "/numa/numa.html")
+                | stats count as attempts by uri_path
+                | sort - attempts
+            \end{codeblock}
+
+            \begin{figure}[h]
+                \centering
+                \includegraphics[width=0.9\linewidth]{images/q6.png}
+                \caption{Attempts broken down by the specific file requested.}
+                \label{fig:q6}
+            \end{figure}
+
+            \Cref{fig:q6} breaks the 284 attempts down by file: \texttt{/hidden/anna\_nicole.html} (73),
+            \texttt{/numa/numa.html} (72), \texttt{/rush/signals.zip} (71), and \texttt{/passwords.pdf} (68).
+
+            \begin{takeawaybox}
+                All four files are being probed at almost the same rate, but \texttt{passwords.pdf} is the
+                clearest sensitive-information target by name; the others read more like an attacker fishing for
+                any interesting-looking file on the server.
+            \end{takeawaybox}
+
+    \section{Part III: Are There Bots Crawling Our Websites}
+
+        \subsection[Finding Bots]{Q7: Finding Bots}
+
+            The hint tells us to look at the \texttt{User-Agent} field in \texttt{access.log}. We first try
+            filtering directly on Splunk's extracted \texttt{useragent} field.
+
+            \begin{codeblock}{text}{Bots via useragent Field}
+                source="*access.log" (useragent="*bot*" OR useragent="*Bot*" OR useragent="*crawler*" OR useragent="*Netcraft*")
+                | stats count as hits by useragent
+                | sort - hits
+            \end{codeblock}
+
+            \begin{figure}[h]
+                \centering
+                \includegraphics[width=0.9\linewidth]{images/q7-1.png}
+                \caption{Requests grouped by bot-like user agent, using the extracted field.}
+                \label{fig:q7-1}
+            \end{figure}
+
+            As a cross-check, we also match on the raw event text and re-extract the user agent with \texttt{rex},
+            in case the \texttt{useragent} field was not extracted the same way for every event.
+
+            \begin{codeblock}{text}{Bots via Raw-Text rex Fallback}
+                source="*access.log" ("Googlebot" OR "YandexBot" OR "NetcraftSurveyAgent")
+                | rex "\"(?<ua>[^\"]+)\"\s+\d+\s*$"
+                | stats count as hits by ua
+                | sort - hits
+            \end{codeblock}
+
+            \begin{figure}[h]
+                \centering
+                \includegraphics[width=0.9\linewidth]{images/q7-2.png}
+                \caption{Same bot traffic, re-extracted directly from the raw event text.}
+                \label{fig:q7-2}
+            \end{figure}
+
+            Both \cref{fig:q7-1} and \cref{fig:q7-2} agree on the same 2,346 events and the same top 5 user
+            agents, so we are confident the field extraction is correct. So yes, we can find bots crawling our
+            websites: \textbf{Googlebot} (three different user-agent strings, 532/495/439 hits), the
+            \textbf{NetcraftSurveyAgent} (497 hits), and \textbf{YandexBot} (383 hits).
+
+        \subsection[Bot Behavior]{Q8: What Are the Bots Doing}
+
+            \begin{codeblock}{text}{Bot Activity by Path and Status}
+                source="*access.log" ("Googlebot" OR "YandexBot" OR "NetcraftSurveyAgent")
+                | stats count as hits by uri_path, status
+                | sort - hits
+            \end{codeblock}
+
+            \begin{figure}[h]
+                \centering
+                \includegraphics[width=0.9\linewidth]{images/q8.png}
+                \caption{Bot traffic broken down by requested path and HTTP status.}
+                \label{fig:q8}
+            \end{figure}
+
+            \Cref{fig:q8} shows the bots mostly browsing the same storefront pages a normal shopper would:
+            \texttt{/cart.do} (681), \texttt{/product.screen} (513), \texttt{/oldlink} (377),
+            \texttt{/category.screen} (340), and \texttt{/cart/success.do} (125), almost all with status 200.
+            Only a small number of hits land on error statuses (503, 500, 408, 406, 400) on those same pages.
+
+            \begin{takeawaybox}
+                The bot traffic we see (Googlebot, YandexBot, NetcraftSurveyAgent) is legitimate search-engine
+                and monitoring crawling, not an attack; it walks the normal product catalog the same way a
+                shopper would, unlike the sensitive-path probing in Part II.
+            \end{takeawaybox}
 
 \end{document}
