@@ -1,0 +1,3 @@
+source="*secure.log" "Failed password"
+| stats count as attempts by host
+| sort - attempts

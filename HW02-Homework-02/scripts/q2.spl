@@ -1,0 +1,4 @@
+source="*secure.log" "Failed password"
+| eval hour=strftime(_time, "%H:00-%H:59")
+| stats count as attempts by hour
+| sort - attempts

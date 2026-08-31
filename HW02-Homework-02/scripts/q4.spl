@@ -1,0 +1,5 @@
+source="*secure.log" "Failed password"
+| rex "Failed password for (?:invalid user )?(?<account>\S+) from"
+| stats count as attempts by account
+| sort - attempts
+| head 5
