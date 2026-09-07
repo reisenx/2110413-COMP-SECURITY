@@ -91,6 +91,8 @@
         is indexed exactly once), and every search below is run with the time range set to \textbf{All time}, since
         the events are not from the last 24 hours.
 
+    \pagebreak
+
     \section{Part I: Suspicious Login Activity}
 
         On Linux servers, \texttt{secure.log} contains the authentication events, so this is where we look first
@@ -146,6 +148,8 @@
             \Cref{fig:q2} shows all 33,253 attempts falling into a single hour bucket, \textbf{20:00--20:59}. So,
             based on this data, hackers appear to try to hack our servers during the \textbf{20:00--20:59} hour.
 
+    \pagebreak
+
         \subsection[Busiest Server]{Q3: Which Server Had the Most Attempts}
 
             \begin{notebox}[Note: the \texttt{host} field is not reliable here]
@@ -170,6 +174,8 @@
             we uploaded the data from, not the actual server name. So instead of relying on \texttt{host}, we
             parse the server name straight out of the \texttt{source} file path with \texttt{rex}.
 
+    \pagebreak
+
             \begin{codeblock}{text}{Attempts by Server}
                 source="*secure.log" "Failed password"
                 | rex field=source "/(?<server>mailsv|www1|www2|www3)/secure\.log"
@@ -191,6 +197,8 @@
                 www1 is the server under the heaviest brute-force pressure, but the difference across the four
                 servers is small; attackers are not favoring one server much over the others.
             \end{takeawaybox}
+
+    \pagebreak
 
         \subsection[Top Account]{Q4: Most Popular Account}
 
@@ -215,6 +223,8 @@
             \Cref{fig:q4} shows \textbf{root} as the most popular account (1,493 attempts), followed by
             administrator (1,020), admin (938), operator (923), and mail (753). Hackers are mostly guessing
             generic admin-sounding usernames rather than real people's accounts.
+
+    \pagebreak
 
     \section{Part II: Sensitive Files on Web Servers}
 
@@ -269,6 +279,8 @@
             \texttt{/passwords.pdf}) all sitting near the top of the list. So yes, we can find attempts to get
             access to sensitive information, and there were \textbf{284} such attempts.
 
+    \pagebreak
+
         \subsection[Targeted Files]{Q6: What Resource Are Hackers Looking For}
 
             \begin{codeblock}{text}{Sensitive-Path Probes by File}
@@ -293,6 +305,8 @@
                 any interesting-looking file on the server.
             \end{takeawaybox}
 
+    \pagebreak
+
     \section{Part III: Are There Bots Crawling Our Websites}
 
         \subsection[Finding Bots]{Q7: Finding Bots}
@@ -316,6 +330,8 @@
             As a cross-check, we also match on the raw event text and re-extract the user agent with \texttt{rex},
             in case the \texttt{useragent} field was not extracted the same way for every event.
 
+    \pagebreak
+
             \begin{codeblock}{text}{Bots via Raw-Text rex Fallback}
                 source="*access.log" ("Googlebot" OR "YandexBot" OR "NetcraftSurveyAgent")
                 | rex "\"(?<ua>[^\"]+)\"\s+\d+\s*$"
@@ -334,6 +350,8 @@
             agents, so we are confident the field extraction is correct. So yes, we can find bots crawling our
             websites: \textbf{Googlebot} (three different user-agent strings, 532/495/439 hits), the
             \textbf{NetcraftSurveyAgent} (497 hits), and \textbf{YandexBot} (383 hits).
+
+    \pagebreak
 
         \subsection[Bot Behavior]{Q8: What Are the Bots Doing}
 
