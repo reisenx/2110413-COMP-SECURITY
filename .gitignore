@@ -1,218 +1,321 @@
-# Byte-compiled / optimized / DLL files
-__pycache__/
-*.py[codz]
-*$py.class
+# Visual Studio Code configuration
+.vscode
 
-# C extensions
-*.so
+# Competitive Programming Helper Extension (.cph) file
+*.cph
 
-# Distribution / packaging
-.Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-share/python-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
-MANIFEST
+# Code Testing
+*test.py
+*test.cpp
+*.exe
 
-# PyInstaller
-#   Usually these files are written by a python script from a template
-#   before PyInstaller builds the exe, so as to inject date/other infos into it.
-*.manifest
-*.spec
+# Python Library Cache
+*__pycache__
+*.ruff_cache
+*.mypy_cache
 
-# Installer logs
-pip-log.txt
-pip-delete-this-directory.txt
+###############################################################################
+# LaTeX
+###############################################################################
 
-# Unit test / coverage reports
-htmlcov/
-.tox/
-.nox/
-.coverage
-.coverage.*
-.cache
-nosetests.xml
-coverage.xml
-*.cover
-*.py.cover
-.hypothesis/
-.pytest_cache/
-cover/
-
-# Translations
-*.mo
-*.pot
-
-# Django stuff:
+# Core latex/pdflatex auxiliary files
+*.aux
+*.lof
 *.log
-local_settings.py
-db.sqlite3
-db.sqlite3-journal
+*.lot
+*.fls
+*.out
+*.toc
+*.fmt
+*.fot
+*.cb
+*.cb2
+.*.lb
 
-# Flask stuff:
-instance/
-.webassets-cache
+# Intermediate documents
+*.dvi
+*.xdv
+*-converted-to.*
+.pdf
 
-# Scrapy stuff:
-.scrapy
+# Bibliography auxiliary files (bibtex/biblatex/biber)
+*.bbl
+*.bbl-SAVE-ERROR
+*.bcf
+*.bcf-SAVE-ERROR
+*.blg
+*-blx.aux
+*-blx.bib
+*.run.xml
 
-# Sphinx documentation
-docs/_build/
+# Build tool auxiliary files
+*.fdb_latexmk
+*.synctex
+*.synctex(busy)
+*.synctex.gz
+*.synctex.gz(busy)
+*.pdfsync
+*.rubbercache
+rubber.cache
+latex.out/
 
-# PyBuilder
-.pybuilder/
-target/
+# algorithms
+*.alg
+*.loa
 
-# Jupyter Notebook
-.ipynb_checkpoints
+# achemso
+acs-*.bib
 
-# IPython
-profile_default/
-ipython_config.py
+# amsthm
+*.thm
 
-# pyenv
-#   For a library or package, you might want to ignore these files since the code is
-#   intended to run in multiple environments; otherwise, check them in:
-# .python-version
+# attachfile2
+*.atfi
 
-# pipenv
-#   According to pypa/pipenv#598, it is recommended to include Pipfile.lock in version control.
-#   However, in case of collaboration, if having platform-specific dependencies or dependencies
-#   having no cross-platform support, pipenv may install dependencies that don't work, or not
-#   install all needed dependencies.
-# Pipfile.lock
+# beamer
+*.nav
+*.pre
+*.snm
+*.vrb
 
-# UV
-#   Similar to Pipfile.lock, it is generally recommended to include uv.lock in version control.
-#   This is especially recommended for binary packages to ensure reproducibility, and is more
-#   commonly ignored for libraries.
-# uv.lock
+# changes
+*.soc
+*.loc
 
-# poetry
-#   Similar to Pipfile.lock, it is generally recommended to include poetry.lock in version control.
-#   This is especially recommended for binary packages to ensure reproducibility, and is more
-#   commonly ignored for libraries.
-#   https://python-poetry.org/docs/basic-usage/#commit-your-poetrylock-file-to-version-control
-# poetry.lock
-# poetry.toml
+# comment
+*.cut
 
-# pdm
-#   Similar to Pipfile.lock, it is generally recommended to include pdm.lock in version control.
-#   pdm recommends including project-wide configuration in pdm.toml, but excluding .pdm-python.
-#   https://pdm-project.org/en/latest/usage/project/#working-with-version-control
-# pdm.lock
-# pdm.toml
-.pdm-python
-.pdm-build/
+# context
+*.tuc
+*.tui
+*.tuo
 
-# pixi
-#   Similar to Pipfile.lock, it is generally recommended to include pixi.lock in version control.
-# pixi.lock
-#   Pixi creates a virtual environment in the .pixi directory, just like venv module creates one
-#   in the .venv directory. It is recommended not to include this directory in version control.
-.pixi
+# cprotect
+*.cpt
 
-# PEP 582; used by e.g. github.com/David-OConnor/pyflow and github.com/pdm-project/pdm
-__pypackages__/
+# elsarticle
+*.spl
 
-# Celery stuff
-celerybeat-schedule
-celerybeat.pid
+# endnotes
+*.ent
 
-# Redis
-*.rdb
-*.aof
-*.pid
+# fixme
+*.lox
 
-# RabbitMQ
-mnesia/
-rabbitmq/
-rabbitmq-data/
+# glossaries
+*.acn
+*.acr
+*.glg
+*.glg-abr
+*.glo
+*.glo-abr
+*.gls
+*.gls-abr
+*.glsdefs
+*.lzo
+*.lzs
+*.slg
+*.slo
+*.sls
 
-# ActiveMQ
-activemq-data/
+# gnuplot
+*.gnuplot
+*.table
+*-gnuplottex-*
 
-# SageMath parsed files
-*.sage.py
+# gregoriotex
+*.gaux
+*.glog
+*.gtex
 
-# Environments
-.env
-.envrc
-.venv
-env/
-venv/
-ENV/
-env.bak/
-venv.bak/
+# htlatex
+*.4ct
+*.4tc
+*.idv
+*.lg
+*.trc
+*.xref
 
-# Spyder project settings
-.spyderproject
-.spyproject
+# hypdoc / hyperref
+*.hd
+*.brf
 
-# Rope project settings
-.ropeproject
+# knitr
+*-concordance.tex
+*-tikzDictionary
 
-# mkdocs documentation
-/site
+# listings / tcolorbox
+*.lol
+*.listing
 
-# mypy
-.mypy_cache/
-.dmypy.json
-dmypy.json
+# luatexja-ruby
+*.ltjruby
 
-# Pyre type checker
-.pyre/
+# makeidx
+*.idx
+*.ilg
+*.ind
+*.lpz
 
-# pytype static type analyzer
-.pytype/
+# minitoc
+*.maf
+*.mlf
+*.mlt
+*.mtc[0-9]*
+*.slf[0-9]*
+*.slt[0-9]*
+*.stc[0-9]*
 
-# Cython debug symbols
-cython_debug/
+# minted
+_minted*
+*_minted
+*.data.minted
+*.pyg
 
-# PyCharm
-#   JetBrains specific template is maintained in a separate JetBrains.gitignore that can
-#   be found at https://github.com/github/gitignore/blob/main/Global/JetBrains.gitignore
-#   and can be added to the global gitignore or merged into this file.  For a more nuclear
-#   option (not recommended) you can uncomment the following to ignore the entire idea folder.
-# .idea/
+# morewrites
+*.mw
 
-# Abstra
-#   Abstra is an AI-powered process automation framework.
-#   Ignore directories containing user credentials, local state, and settings.
-#   Learn more at https://abstra.io/docs
-.abstra/
+# newpax / pax
+*.newpax
+*.pax
 
-# Visual Studio Code
-#   Visual Studio Code specific template is maintained in a separate VisualStudioCode.gitignore 
-#   that can be found at https://github.com/github/gitignore/blob/main/Global/VisualStudioCode.gitignore
-#   and can be added to the global gitignore or merged into this file. However, if you prefer, 
-#   you could uncomment the following to ignore the entire vscode folder
-# .vscode/
-# Temporary file for partial code execution
-tempCodeRunnerFile.py
+# pdfpcnotes
+*.pdfpc
 
-# Ruff stuff:
-.ruff_cache/
+# sagetex
+*.sagetex.sage
+*.sagetex.py
+*.sagetex.scmd
 
-# PyPI configuration file
-.pypirc
+# scrwfile
+*.wrt
 
-# Marimo
-marimo/_static/
-marimo/_lsp/
-__marimo__/
+# spelling
+*.spell.bad
+*.spell.txt
 
-# Streamlit
-.streamlit/secrets.toml
+# svg
+svg-inkscape/
+
+# sympy
+*.sout
+*.sympy
+sympy-plots-for-*.tex/
+
+# pdfcomment
+*.upa
+*.upb
+
+# pythontex
+*.pytxcode
+pythontex-files-*/
+
+# thmtools
+*.loe
+
+# TikZ & PGF
+*.dpth
+*.md5
+*.auxlock
+
+# titletoc
+*.ptc
+
+# todonotes / easy-todo
+*.tdo
+*.lod
+
+# vhistory
+*.hst
+*.ver
+
+# xcolor / xmpincl / xindy / xypic / xwatermark
+*.xcp
+*.xmpi
+*.xdy
+*.xyc
+*.xyd
+*.xwm
+
+# endfloat
+*.ttt
+*.fff
+
+# standalone
+*.sta
+
+# Latexian / WinEdt / latexindent / Texpad / LyX / Kile / gummi / KBibTeX / TeXnicCenter
+TSWLatexianTemp*
+*.bak
+*.tex.bak
+*.sav
+*.bak[0-9]*
+.texpadtmp
+*.lyx~
+*.backup
+.*.swp
+*~[0-9]*
+*.tps
+
+# emacs / auctex
+./auto/*
+*.el
+
+# expex
+*-tags.tex
+
+###############################################################################
+# macOS
+###############################################################################
+
+.DS_Store
+.AppleDouble
+.LSOverride
+.localized
+__MACOSX/
+
+# Resource forks
+._*
+
+# Thumbnails / Finder metadata
+Icon?
+
+# Volume / Time Machine / Spotlight leftovers
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# AFP share leftovers
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+###############################################################################
+# Windows
+###############################################################################
+
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+[Dd]esktop.ini
+$RECYCLE.BIN/
+
+###############################################################################
+# Linux
+###############################################################################
+
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+nohup.out
+lost+found
