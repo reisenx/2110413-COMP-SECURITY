@@ -212,108 +212,99 @@
 
         \subsection{Caesar brute-force program}
 
-            Caesar has only 26 keys, so brute force is cheap. The program
-            \path{code/caesar_bruteforce.py} does the following:
+            The program tries all 26 shifts. It gives one point for each common English word,
+            then prints the candidates from highest score to lowest.
 
-            \begin{enumerate}
-                \item For every shift $0,\ldots,25$, decode each letter as
-                    $(c - \text{shift}) \bmod 26$.
-                \item Score the candidate with English letter-frequency chi-squared plus hits
-                    against a small word list.
-                \item Print all 26 candidates, best first.
-            \end{enumerate}
+            \begin{codeblock}[]{Python}{caesar\_bruteforce.py}
+                #!/usr/bin/env python3
+                import sys
 
-            A true Caesar sample (the recovered proverb, shifted by 3) is recovered at
-            shift~3:
+                WORDS = {"A", "AN", "THE", "IS", "OF", "TO", "IN", "THIS",
+                         "SECURITY", "FIRST", "CAUSE", "MISFORTUNE"}
+                SAMPLE = "VHFXULWB LV WKH ILUVW FDXVH RI PLVIRUWXQH."
 
-            \begin{codeblock}{}{Best Caesar candidate on a known-shift sample}
-ciphertext:
-VHFXULWB LV WKH ILUVW FDXVH RI PLVIRUWXQH.
 
- 1. shift= 3  chi2=   26.17  words= 7  <-- best
-    SECURITY IS THE FIRST CAUSE OF MISFORTUNE.
+                def decrypt(text, shift):
+                    return "".join(
+                        chr((ord(c) - ord("A") - shift) % 26 + ord("A"))
+                        if c.isalpha() else c
+                        for c in text.upper()
+                    )
+
+
+                def score(text):
+                    words = "".join(c if c.isalpha() else " " for c in text).split()
+                    return sum(word in WORDS for word in words)
+
+
+                ciphertext = " ".join(sys.argv[1:]) or SAMPLE
+                results = []
+
+                for shift in range(26):
+                    plaintext = decrypt(ciphertext, shift)
+                    results.append((score(plaintext), shift, plaintext))
+
+                for points, shift, plaintext in sorted(
+                        results, key=lambda row: (-row[0], row[1])):
+                    print(f"shift={shift:2} score={points}: {plaintext}")
             \end{codeblock}
 
-            The same program on the \emph{homework} ciphertext never produces English. The
-            ``best'' shift still reads as gibberish (\texttt{SUFVRITA IS TGU \ldots}). That is
-            expected: the assigned text is a mixed substitution, not a constant shift.
+            For the sample, the first result is:
 
-            \begin{examplebox}[How to run it]
-                \texttt{python3 code/caesar\_bruteforce.py 'YOUR CIPHERTEXT HERE'}
-            \end{examplebox}
+            \begin{codeblock}[]{text}{Output}
+                shift= 3 score=7: SECURITY IS THE FIRST CAUSE OF MISFORTUNE.
+            \end{codeblock}
+
+            The homework ciphertext does not fully decrypt with this program because it uses
+            different shifts for different letters, rather than one Caesar shift.
 
     \pagebreak
 
     \section{Part II: Kasiski examination}
 
-        Vigen\`ere is a polyalphabetic substitution: a repeating keyword chooses a different
-        Caesar shift for each position. Simple frequency counts on the whole ciphertext fail,
-        because the same plaintext letter can encrypt to several ciphertext letters.
-
-        Kasiski examination recovers the keyword length without guessing the keyword
-        itself~\cite{kasiski-wiki}.
+        Vigen\`ere repeats a keyword, so each keyword position acts like a different Caesar
+        cipher. Kasiski examination uses repeated ciphertext patterns to estimate the keyword
+        length:
 
         \begin{enumerate}
-            \item Scan the ciphertext for repeated strings of length at least three.
-            \item Record the distances (in letters) between those repeats. Repeats usually
-                occur when the same plaintext chunk lines up with the same keyword letters
-                again, so the distance is a multiple of the keyword length $d$.
-            \item Take the greatest common divisor of those distances. That GCD is a strong
-                candidate for $d$ (or a small multiple of $d$).
-            \item Split the ciphertext into $d$ independent Caesar streams: stream $i$ is
-                every $d$-th letter starting at $i$.
-            \item Attack each stream with ordinary frequency analysis, then reassemble.
+            \item Find ciphertext strings of at least three letters that appear more than once.
+            \item Measure the distance between each pair of repeats.
+            \item Find a common factor of the distances. It is a likely keyword length.
+            \item Split the text by keyword position and use frequency analysis on each group.
         \end{enumerate}
 
-        \begin{takeawaybox}
-            Kasiski turns Vigen\`ere into ``find $d$, then crack $d$ Caesar ciphers.''
-            The hard polyalphabetic problem collapses once the period is known.
-        \end{takeawaybox}
+        After finding the length, the Vigen\`ere cipher becomes several smaller Caesar ciphers,
+        which can be cracked separately.
 
     \pagebreak
 
     \section{Part III: Block-cipher modes on a bitmap}
 
-        Electronic Code Book (ECB) encrypts each block with the same key and no chaining.
-        NIST still documents ECB, but warns that identical plaintext blocks produce identical
-        ciphertext blocks~\cite{nist-sp800-38a}. This section makes that warning visible.
+        \subsection{Procedure}
 
-        \subsection{Image conversion}
+            First, I resized the source image and converted it to a 1-bit binary PBM:
 
-            Source file: \texttt{docs/images/source.jpg}. ImageMagick resized it to exactly
-            $2000\times 2000$ and wrote a 1-bit binary PBM (Netpbm P4)~\cite{netpbm-wiki}:
-
-            \begin{codeblock}{}{Convert to a 2000x2000 binary PBM}
-magick docs/images/source.jpg \
-    -resize 2000x2000! -colorspace Gray -threshold 50% \
-    pbm:org.pbm
+            \begin{codeblock}[]{bash}{Image conversion}
+                magick docs/images/source.jpg \
+                    -resize 2000x2000! -colorspace Gray -threshold 50% \
+                    pbm:org.pbm
             \end{codeblock}
 
-            The file header is two ASCII lines, then 500{,}000 bytes of pixels
-            ($2000\times 2000$ bits, packed 8 per byte). That body length is a multiple of the
-            AES block size (16 bytes), so \texttt{-nopad} is valid with no extra bytes.
+            I removed the two-line PBM header and encrypted only the 500{,}000-byte pixel body.
+            This size is divisible by AES's 16-byte block size.
 
-        \subsection{Strip the header, encrypt, restore the header}
+            \begin{codeblock}[]{bash}{Encrypt the PBM body}
+                openssl enc -aes-256-ecb -in org.x -out enc-ecb.x \
+                    -nosalt -nopad -K 001122...ccddeeff
 
-            Encrypting the header would destroy the PBM magic number, so only the pixel body
-            is encrypted~\cite{openssl-enc}. Demonstration key and CBC IV (hex) are stored
-            in \path{code/run_experiments.py}; they are lab constants, not production secrets.
-
-            \begin{codeblock}{}{AES-256-ECB and AES-256-CBC on the pixel body}
-openssl enc -aes-256-ecb -in org.x -out enc-ecb.x \
-    -nosalt -nopad -K 001122...ccddeeff
-openssl enc -aes-256-cbc -in org.x -out enc-cbc.x \
-    -nosalt -nopad -K 001122...ccddeeff \
-    -iv 0102030405060708090a0b0c0d0e0f10
+                openssl enc -aes-256-cbc -in org.x -out enc-cbc.x \
+                    -nosalt -nopad -K 001122...ccddeeff \
+                    -iv 0102030405060708090a0b0c0d0e0f10
             \end{codeblock}
 
-            The original two-line header \texttt{P4} / \texttt{2000 2000} is prepended again
-            so the results open as images.
+            Finally, I added the original PBM header back to each encrypted body.
 
-        \subsection{Results}
-
-            Figure~\ref{fig:modes} is left-to-right: original 1-bit image, AES-256-ECB, and
-            AES-256-CBC.
+        \subsection{Result and analysis}
 
             \begin{figure}[h]
                 \centering
@@ -322,25 +313,10 @@ openssl enc -aes-256-cbc -in org.x -out enc-cbc.x \
                 \label{fig:modes}
             \end{figure}
 
-            Larger individual frames are in \texttt{docs/images/}:
-            \texttt{original.png}, \texttt{aes256-ecb.png}, and \texttt{aes256-cbc.png}.
-
-        \subsection{What the pictures show}
-
-            In ECB, repeated 16-byte plaintext regions (flat sky, dark hair, the dress) encrypt
-            to the same ciphertext bytes. After the header is restored, those repeats still
-            draw the outline of the figure. The middle panel is noisy, but the silhouette is
-            still there.
-
-            CBC XORs each plaintext block with the previous ciphertext block (the first block
-            uses the IV). Equal plaintext blocks therefore become unequal ciphertext blocks.
-            The right panel is unstructured static: no usable picture remains.
-
-            \begin{takeawaybox}
-                A block cipher is only as hiding as its \emph{mode}. ECB leaks repeated
-                structure. Modes with an IV and chaining or feedback (CBC, CTR, GCM, \ldots)
-                should be used for real data, especially images and other patterned files.
-            \end{takeawaybox}
+            ECB encrypts equal plaintext blocks into equal ciphertext blocks, so the picture's
+            shape is still visible. CBC mixes each block with the previous encrypted block and
+            an IV, so its result looks random. This shows why ECB should not be used for data
+            with repeated patterns.
 
     \pagebreak
 
@@ -348,29 +324,16 @@ openssl enc -aes-256-cbc -in org.x -out enc-cbc.x \
 
         \subsection{Experimental design}
 
-            Performance was measured with OpenSSL's own timing tool~\cite{openssl-speed}, not
-            a stopwatch.
+            I used OpenSSL 3.6.4 on an Apple M1 Pro. Each test ran for 3 seconds and was
+            repeated three times. The tables show the median result. RC4 and Blowfish need
+            OpenSSL's legacy provider.
 
-            \begin{itemize}
-                \item Implementation: OpenSSL 3.6.4 (\texttt{/opt/homebrew/opt/openssl@3/bin/openssl}).
-                \item Host: Apple M1 Pro, otherwise idle.
-                \item Each algorithm ran for 3 seconds per buffer size, three independent times.
-                    The table reports the \textbf{median} of those three runs.
-                \item SHA-1 used the default provider. RC4 and Blowfish are legacy in OpenSSL~3,
-                    so those two runs also loaded \texttt{-provider legacy}.
-                \item DSA reports sign and verify rates at 1024-bit and 2048-bit parameters
-                    (OpenSSL 3 no longer times 512-bit DSA).
-            \end{itemize}
-
-            \begin{codeblock}{}{Commands used for Part 4(a)}
-openssl speed -seconds 3 sha1
-openssl speed -seconds 3 -provider legacy -provider default rc4
-openssl speed -seconds 3 -provider legacy -provider default blowfish
-openssl speed -seconds 3 dsa
+            \begin{codeblock}[]{bash}{Commands used for Part 4(a)}
+                openssl speed -seconds 3 sha1
+                openssl speed -seconds 3 -provider legacy -provider default rc4
+                openssl speed -seconds 3 -provider legacy -provider default blowfish
+                openssl speed -seconds 3 dsa
             \end{codeblock}
-
-            OpenSSL prints symmetric throughput in thousands of bytes per second. Table
-            values keep that unit.
 
         \subsection{Measured results}
 
@@ -404,102 +367,29 @@ openssl speed -seconds 3 dsa
                 \label{tab:speed-dsa}
             \end{table}
 
-            On large buffers, SHA-1 hashed about 2.3\,GB/s, RC4 encrypted about 1.3\,GB/s, and
-            Blowfish stayed near 126\,MB/s. DSA is in a different league: a few thousand
-            signatures per second, not gigabytes of bulk data.
-
         \subsection{Performance versus security}
 
-            \begin{table}[h]
-                \centering
-                \small
-                \begin{tabular}{
-                    >{\raggedright\arraybackslash}p{2.1cm}
-                    >{\raggedright\arraybackslash}p{2.3cm}
-                    >{\raggedright\arraybackslash}p{3.6cm}
-                    >{\raggedright\arraybackslash}p{5.4cm}
-                }
-                    \toprule
-                    Primitive & Role & Speed here & Security status \\
-                    \midrule
-                    SHA-1 & Hash & Fastest bulk primitive measured & Collision attacks are practical~\cite{shattered}; NIST has moved the ecosystem off SHA-1~\cite{nist-sha1-transition}. Use SHA-256 or SHA-3 for new work. \\
-                    RC4 & Stream cipher & Very fast stream encryption & Biased keystream; forbidden in TLS~\cite{rfc7465}. \\
-                    Blowfish & 64-bit block cipher & Much slower than RC4/SHA-1 on this CPU & 64-bit blocks are small by modern standards; AES is the usual replacement. \\
-                    DSA & Public-key signature & Thousands of ops/s, not GB/s & Provides authentication and non-repudiation, not bulk confidentiality. 1024-bit parameters are no longer considered adequate. \\
-                    \bottomrule
-                \end{tabular}
-                \caption{What each measured primitive is for, and whether it is still appropriate.}
-                \label{tab:compare}
-            \end{table}
-
-            Fast is not the same as safe. RC4 won the throughput contest among the ciphers and
-            still must not be used. DSA lost the throughput contest and is still the only
-            primitive in this set that can bind a message to a private key.
+            \begin{itemize}
+                \item \textbf{SHA-1} is a fast hash, but collision attacks make it unsafe for
+                    new security systems. SHA-256 is a safer choice.
+                \item \textbf{RC4} is fast, but its keystream has known biases, so it is obsolete.
+                \item \textbf{Blowfish} is slower and has a small 64-bit block size. AES is
+                    preferred today.
+                \item \textbf{DSA} is much slower because it uses public-key mathematics. It
+                    provides signatures, not bulk encryption.
+            \end{itemize}
 
         \subsection{Digital signatures}
 
-            A digital signature does not encrypt the whole file with DSA. It combines a fast
-            hash with a slow public-key operation:
-
             \begin{enumerate}
-                \item The signer hashes the message (SHA family). The digest is short even if
-                    the file is large.
-                \item The signer applies the private key to that digest (DSA, RSA, or ECDSA).
-                \item The verifier hashes the received message independently and checks the
-                    signature with the public key.
+                \item The sender hashes the message.
+                \item The sender signs the hash with their private key.
+                \item The receiver hashes the message and checks the signature with the
+                    sender's public key.
             \end{enumerate}
 
-            \begin{defbox}[What each piece contributes]
-                \textbf{Hash:} cheap integrity check; any bit flip changes the digest.
-                \textbf{Public-key sign:} only the private-key holder can produce a valid
-                signature (authentication and non-repudiation).
-                \textbf{Symmetric cipher (AES, historically RC4/Blowfish):} optional
-                confidentiality for the payload, usually under a random session key.
-            \end{defbox}
-
-            The combination avoids each tool's weakness. DSA is too slow to encrypt megabytes.
-            A hash alone is not a signature, because anyone can recompute it. A symmetric
-            cipher keeps the bytes secret but does not prove who sent them. Real protocols
-            therefore \emph{hash, sign the digest, and encrypt the body separately} (hybrid
-            encryption plus signatures).
-
-            For new designs, replace the lab primitives with SHA-256 (or SHA-3), AES-GCM or
-            ChaCha20-Poly1305, and ECDSA/Ed25519 or RSA-PSS.
-
-    \clearpage
-    \begin{thebibliography}{9}
-        \bibitem{kasiski-wiki}
-            Wikipedia contributors.
-            \emph{Kasiski examination}.
-            \url{https://en.wikipedia.org/wiki/Kasiski_examination}.
-        \bibitem{netpbm-wiki}
-            Wikipedia contributors.
-            \emph{Netpbm}.
-            \url{https://en.wikipedia.org/wiki/Netpbm}.
-        \bibitem{openssl-enc}
-            OpenSSL Wiki.
-            \emph{Enc}.
-            \url{https://wiki.openssl.org/index.php/Enc}.
-        \bibitem{nist-sp800-38a}
-            National Institute of Standards and Technology.
-            \emph{NIST SP 800-38A: Recommendation for Block Cipher Modes of Operation}, 2001.
-            \url{https://csrc.nist.gov/publications/detail/sp/800-38a/final}.
-        \bibitem{nist-sha1-transition}
-            National Institute of Standards and Technology.
-            \emph{NIST Policy on Hash Functions}.
-            \url{https://csrc.nist.gov/projects/hash-functions/nist-policy-on-hash-functions}.
-        \bibitem{rfc7465}
-            A.~Popov.
-            \emph{Prohibiting RC4 Cipher Suites}. RFC~7465, 2015.
-            \url{https://www.rfc-editor.org/rfc/rfc7465}.
-        \bibitem{shattered}
-            Google and CWI Amsterdam.
-            \emph{SHAttered}.
-            \url{https://shattered.io/}.
-        \bibitem{openssl-speed}
-            OpenSSL.
-            \emph{openssl-speed}.
-            \url{https://docs.openssl.org/3.6/man1/openssl-speed/}.
-    \end{thebibliography}
+            Hashing is fast and detects changes. Public-key signing is slower but proves who
+            signed the message. Together they provide integrity, authentication, and
+            non-repudiation without applying slow public-key operations to the whole message.
 
 \end{document}

@@ -60,33 +60,18 @@
 % bundled biblatex/biber versions do not have to match.
 
 % CODE BLOCK PACKAGES %
+% minted needs Pygments and shell escape, so build with:
+%   tectonic -X compile -Z shell-escape main.tex
 \usepackage{tcolorbox}
-\tcbuselibrary{listings, skins, breakable}
+\tcbuselibrary{minted, skins, breakable}
 
 % DEFINE GITHUB DARK THEME COLORS %
 \definecolor{ghback}{HTML}{0d1117}
 \definecolor{ghtext}{HTML}{c9d1d9}
 \definecolor{ghborder}{HTML}{30363d}
 
-\lstset{
-    basicstyle=\ttfamily\footnotesize\color{ghtext},
-    keywordstyle=\color{ghtext}\bfseries,
-    commentstyle=\color{ghtext!80},
-    stringstyle=\color{ghtext},
-    numbers=left,
-    numberstyle=\scriptsize\color{white!60!gray},
-    numbersep=5pt,
-    breaklines=true,
-    showstringspaces=false,
-    keepspaces=true,
-    columns=fullflexible,
-    alsoletter={-},
-    literate={-}{-}1,
-    upquote=true,
-    tabsize=4,
-}
-
 % CODE BLOCK CONFIGURATION %
+\renewcommand{\theFancyVerbLine}{\textcolor{white!60!gray}{\scriptsize\arabic{FancyVerbLine}}}
 \newtcblisting{codeblock}[3][]{
     enhanced,
     breakable,
@@ -97,27 +82,27 @@
     fonttitle=\bfseries\small,
     arc=3mm,
     boxrule=0.5mm,
+    % PADDING SETTINGS %
     left=25pt,
     right=10pt,
     top=5pt,
     bottom=5pt,
-    listing engine=listings,
+    % MINTED SETTINGS %
+    listing engine=minted,
     listing only,
-    listing options={
-        language=#2,
-        basicstyle=\ttfamily\footnotesize\color{ghtext},
-        keywordstyle=\color{ghtext}\bfseries,
-        numbers=left,
-        numberstyle=\scriptsize\color{white!60!gray},
+    minted language=#2,
+    minted options={
+        linenos,
         numbersep=5pt,
+        fontsize=\footnotesize,
         breaklines=true,
-        showstringspaces=false,
-        keepspaces=true,
-        columns=fullflexible,
-        alsoletter={-},
-        literate={-}{-}1,
-        upquote=true,
-        tabsize=4,
+        breakanywhere=true,
+        % autogobble drops the shared source indentation, so code can sit
+        % nested inside the surrounding LaTeX; stripnl then keeps the
+        % indented \end tag from adding a trailing blank line.
+        autogobble,
+        stripnl,
+        style=monokai,
     },
     title={#3},
     #1
