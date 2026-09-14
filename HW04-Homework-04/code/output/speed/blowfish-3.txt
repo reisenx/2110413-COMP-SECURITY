@@ -1,0 +1,14 @@
+Doing blowfish ops for 3s on 16 size blocks: 22528524 blowfish ops in 2.98s
+Doing blowfish ops for 3s on 64 size blocks: 5637576 blowfish ops in 2.93s
+Doing blowfish ops for 3s on 256 size blocks: 1449303 blowfish ops in 2.98s
+Doing blowfish ops for 3s on 1024 size blocks: 362301 blowfish ops in 2.97s
+Doing blowfish ops for 3s on 8192 size blocks: 45887 blowfish ops in 2.98s
+Doing blowfish ops for 3s on 16384 size blocks: 22749 blowfish ops in 2.97s
+version: 3.6.4
+built on: Tue Aug 25 11:48:34 2026 UTC
+options: bn(64,64)
+compiler: clang -fPIC -arch arm64 -O3 -Wall -DL_ENDIAN -DOPENSSL_PIC -D_REENTRANT -DOPENSSL_BUILDING_OPENSSL -DNDEBUG
+CPUINFO: OPENSSL_armcap=0x987d
+The 'numbers' are in 1000s of bytes per second processed.
+type             16 bytes     64 bytes    256 bytes   1024 bytes   8192 bytes  16384 bytes
+blowfish        120958.52k   123141.59k   124503.88k   124914.55k   126143.06k   125494.82k

@@ -1,0 +1,14 @@
+Doing rc4 ops for 3s on 16 size blocks: 161041096 rc4 ops in 2.95s
+Doing rc4 ops for 3s on 64 size blocks: 53032326 rc4 ops in 2.98s
+Doing rc4 ops for 3s on 256 size blocks: 14353797 rc4 ops in 2.99s
+Doing rc4 ops for 3s on 1024 size blocks: 3631922 rc4 ops in 2.99s
+Doing rc4 ops for 3s on 8192 size blocks: 458961 rc4 ops in 2.98s
+Doing rc4 ops for 3s on 16384 size blocks: 221364 rc4 ops in 2.92s
+version: 3.6.4
+built on: Tue Aug 25 11:48:34 2026 UTC
+options: bn(64,64)
+compiler: clang -fPIC -arch arm64 -O3 -Wall -DL_ENDIAN -DOPENSSL_PIC -D_REENTRANT -DOPENSSL_BUILDING_OPENSSL -DNDEBUG
+CPUINFO: OPENSSL_armcap=0x987d
+The 'numbers' are in 1000s of bytes per second processed.
+type             16 bytes     64 bytes    256 bytes   1024 bytes   8192 bytes  16384 bytes
+rc4             873443.23k  1138949.28k  1228953.86k  1243842.18k  1261680.71k  1242064.31k

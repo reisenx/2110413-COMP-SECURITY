@@ -1,0 +1,14 @@
+Doing sha1 ops for 3s on 16 size blocks: 20789563 sha1 ops in 2.97s
+Doing sha1 ops for 3s on 64 size blocks: 18240796 sha1 ops in 2.97s
+Doing sha1 ops for 3s on 256 size blocks: 12242703 sha1 ops in 2.95s
+Doing sha1 ops for 3s on 1024 size blocks: 5334431 sha1 ops in 2.98s
+Doing sha1 ops for 3s on 8192 size blocks: 840364 sha1 ops in 2.97s
+Doing sha1 ops for 3s on 16384 size blocks: 424809 sha1 ops in 2.97s
+version: 3.6.4
+built on: Tue Aug 25 11:48:34 2026 UTC
+options: bn(64,64)
+compiler: clang -fPIC -arch arm64 -O3 -Wall -DL_ENDIAN -DOPENSSL_PIC -D_REENTRANT -DOPENSSL_BUILDING_OPENSSL -DNDEBUG
+CPUINFO: OPENSSL_armcap=0x987d
+The 'numbers' are in 1000s of bytes per second processed.
+type             16 bytes     64 bytes    256 bytes   1024 bytes   8192 bytes  16384 bytes
+sha1            111997.65k   393067.66k  1062417.62k  1833039.38k  2317933.30k  2343458.13k

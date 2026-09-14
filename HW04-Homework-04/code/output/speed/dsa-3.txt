@@ -1,0 +1,12 @@
+Doing 1024 bits sign dsa ops for 3s: 42931 1024 bits DSA sign ops in 2.97s
+Doing 1024 bits verify dsa ops for 3s: 53314 1024 bits DSA verify ops in 2.94s
+Doing 2048 bits sign dsa ops for 3s: 15253 2048 bits DSA sign ops in 2.98s
+Doing 2048 bits verify dsa ops for 3s: 16545 2048 bits DSA verify ops in 2.98s
+version: 3.6.4
+built on: Tue Aug 25 11:48:34 2026 UTC
+options: bn(64,64)
+compiler: clang -fPIC -arch arm64 -O3 -Wall -DL_ENDIAN -DOPENSSL_PIC -D_REENTRANT -DOPENSSL_BUILDING_OPENSSL -DNDEBUG
+CPUINFO: OPENSSL_armcap=0x987d
+                  sign    verify    sign/s verify/s
+dsa 1024 bits 0.000069s 0.000055s  14454.9  18134.0
+dsa 2048 bits 0.000195s 0.000180s   5118.5   5552.0

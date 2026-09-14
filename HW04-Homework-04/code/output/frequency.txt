@@ -1,0 +1,31 @@
+ciphertext:
+PRCSOFQX FP QDR AFOPQ CZSPR LA JFPALOQSKR. QDFP FP ZK LIU BROJZK MOLTROE.
+
+letter_count=59
+unique_letters=20
+
+rank letter count
+   1 P      7
+   2 R      6
+   3 O      6
+   4 F      6
+   5 Q      5
+   6 L      4
+   7 S      3
+   8 A      3
+   9 Z      3
+  10 K      3
+  11 C      2
+  12 D      2
+  13 J      2
+  14 X      1
+  15 I      1
+  16 U      1
+  17 B      1
+  18 M      1
+  19 T      1
+  20 E      1
+
+top_three:
+1. P (7)
+2-4. R, O, F (6 each)

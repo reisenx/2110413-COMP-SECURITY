@@ -1,0 +1,459 @@
+% ============================================================ %
+%  TEMPLATE BODY                                                %
+%  Styling lives in preamble.tex, per-document fields live in  %
+%  metadata.tex. This file is the actual document content.     %
+% ============================================================ %
+
+\input{preamble}
+\input{metadata}
+
+% PDF METADATA AND LINK STYLING (needs the fields from metadata.tex) %
+\definecolor{linkaccent}{HTML}{1a56db}
+\hypersetup{
+    pdftitle={\doctitle},
+    pdfauthor={\docauthor},
+    pdfsubject={\coursecode\ -- \coursename},
+    colorlinks=true,
+    linkcolor=linkaccent,
+    citecolor=linkaccent,
+    urlcolor=linkaccent,
+    bookmarksnumbered=true,
+}
+
+\renewcommand{\subsectionmark}[1]{\markright{#1}}
+
+\begin{document}
+
+    \begin{titlepage}
+        \centering
+        \thispagestyle{empty}
+        \vspace*{4em}
+
+        {\scshape Assignment}
+
+        \vspace{3em}
+        {\Huge\bfseries \doctitle}
+        \vspace{1.5em}
+
+        \noindent\rule{0.6\textwidth}{0.5pt}
+        \vspace{1.5em}
+
+        {\large Assignment \assignmentnumber} \\[0.4em]
+        {\large \assignmentname}
+
+        \vfill
+
+        {\large \institution}
+        \vspace{1em}
+
+        {\large \docauthor}
+
+        \vspace{0.4em}
+        {\normalsize Student ID: \studentid}
+
+        \vspace{2em}
+        {\normalsize \docdate}
+    \end{titlepage}
+
+    \tableofcontents
+    \thispagestyle{empty}
+    \clearpage
+
+    \pagenumbering{arabic}
+
+    \section{Setup}
+
+        This report answers Activity~IV (Fundamentals of Cryptography). Commands were run on
+        macOS (Apple M1 Pro) with Homebrew OpenSSL~3.6.4, ImageMagick~7.1.2-31, Python~3.9.6,
+        and Tectonic~0.17.0. Scripts live in \texttt{HW04-Homework-04/code/}. Raw OpenSSL
+        output is in \texttt{code/output/speed/}. Generated figures are in \texttt{docs/images/}.
+
+        The macOS \texttt{/usr/bin/openssl} binary is LibreSSL~3.3.6 and does not implement
+        \texttt{openssl list}. Every cryptographic command below uses
+        \texttt{/opt/homebrew/opt/openssl@3/bin/openssl}.
+
+    \section{Part I: Cryptanalysis}
+
+        \subsection{Ciphertext}
+
+            The given ciphertext is a short English message written in a classical cipher:
+
+            \begin{quote}
+                \texttt{PRCSOFQX FP QDR AFOPQ CZSPR LA JFPALOQSKR.}\\
+                \texttt{QDFP FP ZK LIU BROJZK MOLTROE.}
+            \end{quote}
+
+        \subsection{Letter frequency}
+
+            Spaces and the period were ignored. There are 59 letters and 20 distinct symbols.
+            Counts came from \texttt{code/frequency\_analysis.py}.
+
+            \begin{table}[h]
+                \centering
+                \begin{tabular}{clr}
+                    \toprule
+                    Rank & Letter & Count \\
+                    \midrule
+                    1 & P & 7 \\
+                    2--4 & R, O, F & 6 each \\
+                    5 & Q & 5 \\
+                    6 & L & 4 \\
+                    7--10 & S, A, Z, K & 3 each \\
+                    11--13 & C, D, J & 2 each \\
+                    14--20 & X, I, U, B, M, T, E & 1 each \\
+                    \bottomrule
+                \end{tabular}
+                \caption{Letter frequencies in the assigned ciphertext.}
+                \label{tab:freq}
+            \end{table}
+
+            The three most frequent ranks are \textbf{P} (7), then the tie \textbf{R, O, F} (6).
+            In English, E, T, A, O, I, N, S, H, R are usually the most common letters, so P is a
+            reasonable first guess for E or S.
+
+        \subsection{Short English words}
+
+            Two-letter English words that appear often include \texttt{OF}, \texttt{TO},
+            \texttt{IN}, \texttt{IS}, \texttt{IT}, \texttt{AS}, and \texttt{AN}. Common
+            three-letter words include \texttt{THE}, \texttt{AND}, \texttt{FOR}, and
+            \texttt{ARE}.
+
+            In the ciphertext, \texttt{FP} appears twice. \texttt{QDFP FP} is a four-letter
+            word followed by that same pair, which matches the English pattern
+            \textbf{THIS IS}. That single guess gives Q$\rightarrow$T, D$\rightarrow$H,
+            F$\rightarrow$I, P$\rightarrow$S, so \texttt{FP} really is \texttt{IS}, and
+            \texttt{QDR} becomes \texttt{TH?}, almost certainly \textbf{THE}
+            (R$\rightarrow$E).
+
+            Those mappings already show that this is \emph{not} a Caesar cipher: P maps to S
+            (shift 11) while R maps to E (shift 13). It is a general monoalphabetic
+            substitution.
+
+        \subsection{Recovering the plaintext}
+
+            Continuing left to right with a one-to-one table:
+
+            \begin{itemize}
+                \item \texttt{PRCSOFQX} $\rightarrow$ \texttt{SE???ITY} $\rightarrow$ \textbf{SECURITY}
+                \item \texttt{AFOPQ} $\rightarrow$ \texttt{?IRST} $\rightarrow$ \textbf{FIRST}
+                \item \texttt{CZSPR} $\rightarrow$ \texttt{C?USE} $\rightarrow$ \textbf{CAUSE}
+                \item \texttt{LA} $\rightarrow$ \textbf{OF}
+                \item \texttt{JFPALOQSKR} $\rightarrow$ \texttt{?ISFORTU?E}\\
+                    $\rightarrow$ \textbf{MISFORTUNE}
+                \item second sentence: \texttt{ZK}=\textbf{AN}, \texttt{LIU}=\textbf{OLD},
+                    \texttt{BROJZK}=\textbf{GERMAN}, \texttt{MOLTROE}=\textbf{PROVERB}
+            \end{itemize}
+
+            \begin{takeawaybox}
+                Plaintext: SECURITY IS THE FIRST CAUSE OF MISFORTUNE.\\
+                THIS IS AN OLD GERMAN PROVERB.
+            \end{takeawaybox}
+
+            \begin{table}[h]
+                \centering
+                \small
+                \resizebox{\textwidth}{!}{%
+                \begin{tabular}{ll}
+                    \toprule
+                    Cipher letters & P R C S O F Q X D A Z L J K I U B M T E \\
+                    Plain letters  & S E C U R I T Y H F A O M N L D G P V B \\
+                    \bottomrule
+                \end{tabular}%
+                }
+                \caption{Recovered substitution. Unused alphabet letters are omitted.}
+                \label{tab:map}
+            \end{table}
+
+            \begin{notebox}[Part 1(c): manual cracking time]
+                Fill in the wall-clock time you personally spent on the pencil-and-paper
+                decrypt \emph{before} submitting, for example ``27 minutes''. Do not use the
+                Python runtime. Recorded time: \textbf{[YOUR TIME HERE]}.
+            \end{notebox}
+
+        \subsection{Caesar brute-force program}
+
+            Caesar has only 26 keys, so brute force is cheap. The program
+            \path{code/caesar_bruteforce.py} does the following:
+
+            \begin{enumerate}
+                \item For every shift $0,\ldots,25$, decode each letter as
+                    $(c - \text{shift}) \bmod 26$.
+                \item Score the candidate with English letter-frequency chi-squared plus hits
+                    against a small word list.
+                \item Print all 26 candidates, best first.
+            \end{enumerate}
+
+            A true Caesar sample (the recovered proverb, shifted by 3) is recovered at
+            shift~3:
+
+            \begin{codeblock}{}{Best Caesar candidate on a known-shift sample}
+ciphertext:
+VHFXULWB LV WKH ILUVW FDXVH RI PLVIRUWXQH.
+
+ 1. shift= 3  chi2=   26.17  words= 7  <-- best
+    SECURITY IS THE FIRST CAUSE OF MISFORTUNE.
+            \end{codeblock}
+
+            The same program on the \emph{homework} ciphertext never produces English. The
+            ``best'' shift still reads as gibberish (\texttt{SUFVRITA IS TGU \ldots}). That is
+            expected: the assigned text is a mixed substitution, not a constant shift.
+
+            \begin{examplebox}[How to run it]
+                \texttt{python3 code/caesar\_bruteforce.py 'YOUR CIPHERTEXT HERE'}
+            \end{examplebox}
+
+    \section{Part II: Kasiski examination}
+
+        Vigen\`ere is a polyalphabetic substitution: a repeating keyword chooses a different
+        Caesar shift for each position. Simple frequency counts on the whole ciphertext fail,
+        because the same plaintext letter can encrypt to several ciphertext letters.
+
+        Kasiski examination recovers the keyword length without guessing the keyword
+        itself~\cite{kasiski-wiki}.
+
+        \begin{enumerate}
+            \item Scan the ciphertext for repeated strings of length at least three.
+            \item Record the distances (in letters) between those repeats. Repeats usually
+                occur when the same plaintext chunk lines up with the same keyword letters
+                again, so the distance is a multiple of the keyword length $d$.
+            \item Take the greatest common divisor of those distances. That GCD is a strong
+                candidate for $d$ (or a small multiple of $d$).
+            \item Split the ciphertext into $d$ independent Caesar streams: stream $i$ is
+                every $d$-th letter starting at $i$.
+            \item Attack each stream with ordinary frequency analysis, then reassemble.
+        \end{enumerate}
+
+        \begin{takeawaybox}
+            Kasiski turns Vigen\`ere into ``find $d$, then crack $d$ Caesar ciphers.''
+            The hard polyalphabetic problem collapses once the period is known.
+        \end{takeawaybox}
+
+    \section{Part III: Block-cipher modes on a bitmap}
+
+        Electronic Code Book (ECB) encrypts each block with the same key and no chaining.
+        NIST still documents ECB, but warns that identical plaintext blocks produce identical
+        ciphertext blocks~\cite{nist-sp800-38a}. This section makes that warning visible.
+
+        \subsection{Image conversion}
+
+            Source file: \texttt{docs/images/source.jpg}. ImageMagick resized it to exactly
+            $2000\times 2000$ and wrote a 1-bit binary PBM (Netpbm P4)~\cite{netpbm-wiki}:
+
+            \begin{codeblock}{}{Convert to a 2000x2000 binary PBM}
+magick docs/images/source.jpg \
+    -resize 2000x2000! -colorspace Gray -threshold 50% \
+    pbm:org.pbm
+            \end{codeblock}
+
+            The file header is two ASCII lines, then 500{,}000 bytes of pixels
+            ($2000\times 2000$ bits, packed 8 per byte). That body length is a multiple of the
+            AES block size (16 bytes), so \texttt{-nopad} is valid with no extra bytes.
+
+        \subsection{Strip the header, encrypt, restore the header}
+
+            Encrypting the header would destroy the PBM magic number, so only the pixel body
+            is encrypted~\cite{openssl-enc}. Demonstration key and CBC IV (hex) are stored
+            in \path{code/run_experiments.py}; they are lab constants, not production secrets.
+
+            \begin{codeblock}{}{AES-256-ECB and AES-256-CBC on the pixel body}
+openssl enc -aes-256-ecb -in org.x -out enc-ecb.x \
+    -nosalt -nopad -K 001122...ccddeeff
+openssl enc -aes-256-cbc -in org.x -out enc-cbc.x \
+    -nosalt -nopad -K 001122...ccddeeff \
+    -iv 0102030405060708090a0b0c0d0e0f10
+            \end{codeblock}
+
+            The original two-line header \texttt{P4} / \texttt{2000 2000} is prepended again
+            so the results open as images.
+
+        \subsection{Results}
+
+            Figure~\ref{fig:modes} is left-to-right: original 1-bit image, AES-256-ECB, and
+            AES-256-CBC.
+
+            \begin{figure}[h]
+                \centering
+                \includegraphics[width=\textwidth]{images/mode-comparison.png}
+                \caption{Original 1-bit image (left), AES-256-ECB (middle), AES-256-CBC (right).}
+                \label{fig:modes}
+            \end{figure}
+
+            Larger individual frames are in \texttt{docs/images/}:
+            \texttt{original.png}, \texttt{aes256-ecb.png}, and \texttt{aes256-cbc.png}.
+
+        \subsection{What the pictures show}
+
+            In ECB, repeated 16-byte plaintext regions (flat sky, dark hair, the dress) encrypt
+            to the same ciphertext bytes. After the header is restored, those repeats still
+            draw the outline of the figure. The middle panel is noisy, but the silhouette is
+            still there.
+
+            CBC XORs each plaintext block with the previous ciphertext block (the first block
+            uses the IV). Equal plaintext blocks therefore become unequal ciphertext blocks.
+            The right panel is unstructured static: no usable picture remains.
+
+            \begin{takeawaybox}
+                A block cipher is only as hiding as its \emph{mode}. ECB leaks repeated
+                structure. Modes with an IV and chaining or feedback (CBC, CTR, GCM, \ldots)
+                should be used for real data, especially images and other patterned files.
+            \end{takeawaybox}
+
+    \section{Part IV: Hashing, ciphers, and digital signatures}
+
+        \subsection{Experimental design}
+
+            Performance was measured with OpenSSL's own timing tool~\cite{openssl-speed}, not
+            a stopwatch.
+
+            \begin{itemize}
+                \item Implementation: OpenSSL 3.6.4 (\texttt{/opt/homebrew/opt/openssl@3/bin/openssl}).
+                \item Host: Apple M1 Pro, otherwise idle.
+                \item Each algorithm ran for 3 seconds per buffer size, three independent times.
+                    The table reports the \textbf{median} of those three runs.
+                \item SHA-1 used the default provider. RC4 and Blowfish are legacy in OpenSSL~3,
+                    so those two runs also loaded \texttt{-provider legacy}.
+                \item DSA reports sign and verify rates at 1024-bit and 2048-bit parameters
+                    (OpenSSL 3 no longer times 512-bit DSA).
+            \end{itemize}
+
+            \begin{codeblock}{}{Commands used for Part 4(a)}
+openssl speed -seconds 3 sha1
+openssl speed -seconds 3 -provider legacy -provider default rc4
+openssl speed -seconds 3 -provider legacy -provider default blowfish
+openssl speed -seconds 3 dsa
+            \end{codeblock}
+
+            OpenSSL prints symmetric throughput in thousands of bytes per second. Table
+            values keep that unit.
+
+        \subsection{Measured results}
+
+            \begin{table}[h]
+                \centering
+                \small
+                \begin{tabular}{lrrrrrr}
+                    \toprule
+                    Algorithm & 16\,B & 64\,B & 256\,B & 1024\,B & 8192\,B & 16384\,B \\
+                    \midrule
+                    SHA-1     & 111625 & 391697 & 1092786 & 1830493 & 2316151 & 2333136 \\
+                    RC4       & 875828 & 1140693 & 1233343 & 1244972 & 1261681 & 1259033 \\
+                    Blowfish  & 121621 & 124320 & 125773 & 125994 & 126441 & 125495 \\
+                    \bottomrule
+                \end{tabular}
+                \caption{Median throughput in 1000s of bytes per second (OpenSSL units).}
+                \label{tab:speed-sym}
+            \end{table}
+
+            \begin{table}[h]
+                \centering
+                \begin{tabular}{lrrrr}
+                    \toprule
+                    DSA size & sign (s) & verify (s) & sign/s & verify/s \\
+                    \midrule
+                    1024 bit & 0.000068 & 0.000053 & 14708 & 18846 \\
+                    2048 bit & 0.000193 & 0.000173 & 5172 & 5770 \\
+                    \bottomrule
+                \end{tabular}
+                \caption{Median DSA sign and verify rates.}
+                \label{tab:speed-dsa}
+            \end{table}
+
+            On large buffers, SHA-1 hashed about 2.3\,GB/s, RC4 encrypted about 1.3\,GB/s, and
+            Blowfish stayed near 126\,MB/s. DSA is in a different league: a few thousand
+            signatures per second, not gigabytes of bulk data.
+
+        \subsection{Performance versus security}
+
+            \begin{table}[h]
+                \centering
+                \small
+                \begin{tabular}{
+                    >{\raggedright\arraybackslash}p{2.1cm}
+                    >{\raggedright\arraybackslash}p{2.3cm}
+                    >{\raggedright\arraybackslash}p{3.6cm}
+                    >{\raggedright\arraybackslash}p{5.4cm}
+                }
+                    \toprule
+                    Primitive & Role & Speed here & Security status \\
+                    \midrule
+                    SHA-1 & Hash & Fastest bulk primitive measured & Collision attacks are practical~\cite{shattered}; NIST has moved the ecosystem off SHA-1~\cite{nist-sha1-transition}. Use SHA-256 or SHA-3 for new work. \\
+                    RC4 & Stream cipher & Very fast stream encryption & Biased keystream; forbidden in TLS~\cite{rfc7465}. \\
+                    Blowfish & 64-bit block cipher & Much slower than RC4/SHA-1 on this CPU & 64-bit blocks are small by modern standards; AES is the usual replacement. \\
+                    DSA & Public-key signature & Thousands of ops/s, not GB/s & Provides authentication and non-repudiation, not bulk confidentiality. 1024-bit parameters are no longer considered adequate. \\
+                    \bottomrule
+                \end{tabular}
+                \caption{What each measured primitive is for, and whether it is still appropriate.}
+                \label{tab:compare}
+            \end{table}
+
+            Fast is not the same as safe. RC4 won the throughput contest among the ciphers and
+            still must not be used. DSA lost the throughput contest and is still the only
+            primitive in this set that can bind a message to a private key.
+
+        \subsection{Digital signatures}
+
+            A digital signature does not encrypt the whole file with DSA. It combines a fast
+            hash with a slow public-key operation:
+
+            \begin{enumerate}
+                \item The signer hashes the message (SHA family). The digest is short even if
+                    the file is large.
+                \item The signer applies the private key to that digest (DSA, RSA, or ECDSA).
+                \item The verifier hashes the received message independently and checks the
+                    signature with the public key.
+            \end{enumerate}
+
+            \begin{defbox}[What each piece contributes]
+                \textbf{Hash:} cheap integrity check; any bit flip changes the digest.
+                \textbf{Public-key sign:} only the private-key holder can produce a valid
+                signature (authentication and non-repudiation).
+                \textbf{Symmetric cipher (AES, historically RC4/Blowfish):} optional
+                confidentiality for the payload, usually under a random session key.
+            \end{defbox}
+
+            The combination avoids each tool's weakness. DSA is too slow to encrypt megabytes.
+            A hash alone is not a signature, because anyone can recompute it. A symmetric
+            cipher keeps the bytes secret but does not prove who sent them. Real protocols
+            therefore \emph{hash, sign the digest, and encrypt the body separately} (hybrid
+            encryption plus signatures).
+
+            For new designs, replace the lab primitives with SHA-256 (or SHA-3), AES-GCM or
+            ChaCha20-Poly1305, and ECDSA/Ed25519 or RSA-PSS.
+
+    \clearpage
+    \begin{thebibliography}{9}
+        \bibitem{kasiski-wiki}
+            Wikipedia contributors.
+            \emph{Kasiski examination}.
+            \url{https://en.wikipedia.org/wiki/Kasiski_examination}.
+        \bibitem{netpbm-wiki}
+            Wikipedia contributors.
+            \emph{Netpbm}.
+            \url{https://en.wikipedia.org/wiki/Netpbm}.
+        \bibitem{openssl-enc}
+            OpenSSL Wiki.
+            \emph{Enc}.
+            \url{https://wiki.openssl.org/index.php/Enc}.
+        \bibitem{nist-sp800-38a}
+            National Institute of Standards and Technology.
+            \emph{NIST SP 800-38A: Recommendation for Block Cipher Modes of Operation}, 2001.
+            \url{https://csrc.nist.gov/publications/detail/sp/800-38a/final}.
+        \bibitem{nist-sha1-transition}
+            National Institute of Standards and Technology.
+            \emph{NIST Policy on Hash Functions}.
+            \url{https://csrc.nist.gov/projects/hash-functions/nist-policy-on-hash-functions}.
+        \bibitem{rfc7465}
+            A.~Popov.
+            \emph{Prohibiting RC4 Cipher Suites}. RFC~7465, 2015.
+            \url{https://www.rfc-editor.org/rfc/rfc7465}.
+        \bibitem{shattered}
+            Google and CWI Amsterdam.
+            \emph{SHAttered}.
+            \url{https://shattered.io/}.
+        \bibitem{openssl-speed}
+            OpenSSL.
+            \emph{openssl-speed}.
+            \url{https://docs.openssl.org/3.6/man1/openssl-speed/}.
+    \end{thebibliography}
+
+\end{document}

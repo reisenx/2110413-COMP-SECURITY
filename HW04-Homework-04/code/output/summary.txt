@@ -1,0 +1,18 @@
+openssl=OpenSSL 3.6.4 25 Aug 2026 (Library: OpenSSL 3.6.4 25 Aug 2026)
+imagemagick=Version: ImageMagick 7.1.2-31 Q16-HDRI aarch64 8309dc92a:20260903 https://imagemagick.org
+python=3.9.6
+cpu=Apple M1 Pro
+pbm_identify=/Users/wsrichainont/reisenx/external/2110413-COMP-SECURITY/HW04-Homework-04/code/output/image/org.pbm PBM 2000x2000 2000x2000+0+0 1-bit Bilevel Gray 500013B 0.020u 0:00.020
+pbm_header=
+P4
+2000 2000
+body_bytes=500000
+padded_bytes=500000
+pad=0
+aes_key=00112233445566778899aabbccddeeff00112233445566778899aabbccddeeff
+aes_iv=0102030405060708090a0b0c0d0e0f10
+sha1 16=111625.46kB/s 64=391697.12kB/s 256=1092786.25kB/s 1024=1830493.09kB/s 8192=2316151.47kB/s 16384=2333136.40kB/s
+rc4 16=875827.88kB/s 64=1140693.35kB/s 256=1233343.01kB/s 1024=1244972.21kB/s 8192=1261680.71kB/s 16384=1259033.43kB/s
+blowfish 16=121621.23kB/s 64=124320.39kB/s 256=125773.23kB/s 1024=125993.86kB/s 8192=126440.90kB/s 16384=125494.82kB/s
+dsa1024 sign_s=0.000068 verify_s=0.000053 sign_per_s=14708.0 verify_per_s=18846.0
+dsa2048 sign_s=0.000193 verify_s=0.000173 sign_per_s=5172.0 verify_per_s=5770.2
