@@ -61,113 +61,153 @@
 
     \pagenumbering{arabic}
 
-    \section{Setup}
+    % \section{Setup}
 
-        This report answers Activity~IV (Fundamentals of Cryptography). Commands were run on
-        macOS (Apple M1 Pro) with Homebrew OpenSSL~3.6.4, ImageMagick~7.1.2-31, Python~3.9.6,
-        and Tectonic~0.17.0. Scripts live in \texttt{HW04-Homework-04/code/}. Raw OpenSSL
-        output is in \texttt{code/output/speed/}. Generated figures are in \texttt{docs/images/}.
+    %     This report answers Activity~IV (Fundamentals of Cryptography). Commands were run on
+    %     macOS (Apple M1 Pro) with Homebrew OpenSSL~3.6.4, ImageMagick~7.1.2-31, Python~3.9.6,
+    %     and Tectonic~0.17.0. Scripts live in \texttt{HW04-Homework-04/code/}. Raw OpenSSL
+    %     output is in \texttt{code/output/speed/}. Generated figures are in \texttt{docs/images/}.
 
-        The macOS \texttt{/usr/bin/openssl} binary is LibreSSL~3.3.6 and does not implement
-        \texttt{openssl list}. Every cryptographic command below uses
-        \texttt{/opt/homebrew/opt/openssl@3/bin/openssl}.
+    %     The macOS \texttt{/usr/bin/openssl} binary is LibreSSL~3.3.6 and does not implement
+    %     \texttt{openssl list}. Every cryptographic command below uses
+    %     \texttt{/opt/homebrew/opt/openssl@3/bin/openssl}.
 
     \section{Part I: Cryptanalysis}
 
         \subsection{Ciphertext}
 
             The given ciphertext is a short English message written in a classical cipher:
-
             \begin{quote}
                 \texttt{PRCSOFQX FP QDR AFOPQ CZSPR LA JFPALOQSKR.}\\
                 \texttt{QDFP FP ZK LIU BROJZK MOLTROE.}
             \end{quote}
 
-        \subsection{Letter frequency}
+        \subsection{English Knowledge}
+            
+            \subsubsection{Letter frequency}
 
-            Spaces and the period were ignored. There are 59 letters and 20 distinct symbols.
-            Counts came from \texttt{code/frequency\_analysis.py}.
+                Spaces and the period were ignored. There are 59 letters and 20 distinct symbols.
 
-            \begin{table}[h]
-                \centering
-                \begin{tabular}{clr}
-                    \toprule
-                    Rank & Letter & Count \\
-                    \midrule
-                    1 & P & 7 \\
-                    2--4 & R, O, F & 6 each \\
-                    5 & Q & 5 \\
-                    6 & L & 4 \\
-                    7--10 & S, A, Z, K & 3 each \\
-                    11--13 & C, D, J & 2 each \\
-                    14--20 & X, I, U, B, M, T, E & 1 each \\
-                    \bottomrule
-                \end{tabular}
-                \caption{Letter frequencies in the assigned ciphertext.}
-                \label{tab:freq}
-            \end{table}
+                \begin{table}[h]
+                    \centering
+                    \begin{tabular}{clr}
+                        \toprule
+                        Letter & Count \\
+                        \midrule
+                        P & 7 \\
+                        R, O, F & 6 \\
+                        Q & 5 \\
+                        L & 4 \\
+                        S, A, Z, K & 3 \\
+                        C, D, J & 2 \\
+                        X, I, U, B, M, T, E & 1 \\
+                        \bottomrule
+                    \end{tabular}
+                    \caption{Letter frequencies in the assigned ciphertext.}
+                    \label{tab:freq}
+                \end{table}
 
-            The three most frequent ranks are \textbf{P} (7), then the tie \textbf{R, O, F} (6).
-            In English, E, T, A, O, I, N, S, H, R are usually the most common letters, so P is a
-            reasonable first guess for E or S.
+                The three most frequent ranks are \textbf{P} (7), then the tie \textbf{R, O, F} (6).
+                In English, E, T, A, O, I, N, S, H, R are usually the most common letters, so P is a
+                reasonable first guess for E or S.
 
-        \subsection{Short English words}
+            \subsubsection{Short English words}
 
-            Two-letter English words that appear often include \texttt{OF}, \texttt{TO},
-            \texttt{IN}, \texttt{IS}, \texttt{IT}, \texttt{AS}, and \texttt{AN}. Common
-            three-letter words include \texttt{THE}, \texttt{AND}, \texttt{FOR}, and
-            \texttt{ARE}.
+                \begin{itemize}
+                    \item Common two-letter words include \texttt{OF}, \texttt{TO}, \texttt{IN}, \texttt{IS},
+                    \texttt{IT}, \texttt{AS}, and \texttt{AN}.
+                    \item Common three-letter words include \texttt{THE}, \texttt{AND}, \texttt{FOR}, and \texttt{ARE}.
+                \end{itemize}
 
-            In the ciphertext, \texttt{FP} appears twice. \texttt{QDFP FP} is a four-letter
-            word followed by that same pair, which matches the English pattern
-            \textbf{THIS IS}. That single guess gives Q$\rightarrow$T, D$\rightarrow$H,
-            F$\rightarrow$I, P$\rightarrow$S, so \texttt{FP} really is \texttt{IS}, and
-            \texttt{QDR} becomes \texttt{TH?}, almost certainly \textbf{THE}
-            (R$\rightarrow$E).
+                In the ciphertext, \texttt{FP} appears twice. \texttt{QDFP FP} is a four-letter
+                word followed by that same pair, which matches the English pattern \textbf{THIS IS}.
+                Then, we take a look on \texttt{QDR} becomes \texttt{TH?}, so it is certain that R$\rightarrow$E.
 
-            Those mappings already show that this is \emph{not} a Caesar cipher: P maps to S
-            (shift 11) while R maps to E (shift 13). It is a general monoalphabetic
-            substitution.
+                \begin{table}[h]
+                    \centering
+                    \begin{tabular}{|c|c|c|}
+                        \toprule
+                        Cipher letters & Shift & Plain Letters \\
+                        \midrule
+                        \texttt{Q} & +3 & \texttt{T} \\
+                        \texttt{D} & +4 & \texttt{H} \\
+                        \texttt{F} & +3 & \texttt{I} \\
+                        \texttt{P} & +3 & \texttt{S} \\
+                        \texttt{R} & +13 & \texttt{E} \\
+                        \bottomrule
+                    \end{tabular}
+                    \caption{First guess of substitution letters}
+                    \label{tab:first_sub_table}
+                \end{table}
 
         \subsection{Recovering the plaintext}
 
-            Continuing left to right with a one-to-one table:
+            \subsubsection{Complete the substitution table}
+                We tried to use the substitution table above and got these:
 
-            \begin{itemize}
-                \item \texttt{PRCSOFQX} $\rightarrow$ \texttt{SE???ITY} $\rightarrow$ \textbf{SECURITY}
-                \item \texttt{AFOPQ} $\rightarrow$ \texttt{?IRST} $\rightarrow$ \textbf{FIRST}
-                \item \texttt{CZSPR} $\rightarrow$ \texttt{C?USE} $\rightarrow$ \textbf{CAUSE}
-                \item \texttt{LA} $\rightarrow$ \textbf{OF}
-                \item \texttt{JFPALOQSKR} $\rightarrow$ \texttt{?ISFORTU?E}\\
-                    $\rightarrow$ \textbf{MISFORTUNE}
-                \item second sentence: \texttt{ZK}=\textbf{AN}, \texttt{LIU}=\textbf{OLD},
-                    \texttt{BROJZK}=\textbf{GERMAN}, \texttt{MOLTROE}=\textbf{PROVERB}
-            \end{itemize}
+                \begin{table}[h]
+                    \centering
+                    \begin{tabular}{|l|l|l|}
+                        \toprule
+                        Encrypted & Result & Guess \\
+                        \midrule
+                        \texttt{PRCSOFQX} & \texttt{SE???ITY} & \texttt{SECURITY} \\
+                        \texttt{AFOPQ} & \texttt{?IRST} & \texttt{FIRST} \\
+                        \texttt{CZSPR} & \texttt{C?USE} & \texttt{CAUSE} \\
+                        \texttt{LA} & \texttt{OF} & \texttt{OF} \\
+                        \texttt{JFPALOQSKR} & \texttt{?ISFORTU?E} & \texttt{MISFORTUNE} \\
+                        \texttt{ZK} & \texttt{AN} & \texttt{AN} \\
+                        \texttt{LIU} & \texttt{OLD} & \texttt{OLD} \\
+                        \texttt{BROJZK} & \texttt{GERMAN} & \texttt{GERMAN} \\
+                        \texttt{MOLTROE} & \texttt{PROVERB} & \texttt{PROVERB} \\
+                        \bottomrule
+                    \end{tabular}
+                    \caption{First guess of substitution letters}
+                    \label{tab:first_sub_table}
+                \end{table}
 
-            \begin{takeawaybox}
-                Plaintext: SECURITY IS THE FIRST CAUSE OF MISFORTUNE.\\
-                THIS IS AN OLD GERMAN PROVERB.
-            \end{takeawaybox}
+                Therefore, we got the complete substitution table as
 
-            \begin{table}[h]
-                \centering
-                \small
-                \resizebox{\textwidth}{!}{%
-                \begin{tabular}{ll}
-                    \toprule
-                    Cipher letters & P R C S O F Q X D A Z L J K I U B M T E \\
-                    Plain letters  & S E C U R I T Y H F A O M N L D G P V B \\
-                    \bottomrule
-                \end{tabular}%
-                }
-                \caption{Recovered substitution. Unused alphabet letters are omitted.}
-                \label{tab:map}
-            \end{table}
+                \begin{table}[h]
+                    \centering
+                    \begin{tabular}{|c|c|c|}
+                        \toprule
+                        Cipher letters & Shift & Plain Letters \\
+                        \midrule
+                        \texttt{P} & +3 & \texttt{S} \\
+                        \texttt{R} & +13 & \texttt{E} \\
+                        \texttt{C} & +0 & \texttt{C} \\
+                        \texttt{S} & +2 & \texttt{U} \\
+                        \texttt{O} & +3 & \texttt{R} \\
+                        \texttt{F} & +3 & \texttt{I} \\
+                        \texttt{Q} & +3 & \texttt{T} \\
+                        \texttt{X} & +1 & \texttt{Y} \\
+                        \texttt{D} & +4 & \texttt{H} \\
+                        \texttt{A} & +5 & \texttt{F} \\
+                        \texttt{Z} & +1 & \texttt{A} \\
+                        \texttt{L} & +3 & \texttt{O} \\
+                        \texttt{J} & +3 & \texttt{M} \\
+                        \texttt{K} & +3 & \texttt{N} \\
+                        \texttt{I} & +3 & \texttt{L} \\
+                        \texttt{U} & +9 & \texttt{D} \\
+                        \texttt{B} & +5 & \texttt{G} \\
+                        \texttt{M} & +3 & \texttt{P} \\
+                        \texttt{T} & +2 & \texttt{V} \\
+                        \texttt{E} & +23 & \texttt{B} \\
+                        \bottomrule
+                    \end{tabular}
+                    \caption{Complete substitution letters}
+                    \label{tab:sub_table}
+                \end{table}
 
-            \begin{notebox}[Part 1(c): manual cracking time]
-                Fill in the wall-clock time you personally spent on the pencil-and-paper
-                decrypt \emph{before} submitting, for example ``27 minutes''. Do not use the
-                Python runtime. Recorded time: \textbf{[YOUR TIME HERE]}.
+            \subsubsection{Result}
+                \begin{quote}
+                    \texttt{SECURITY IS THE FIRST CAUSE OF MISFORTUNE.}\\
+                    \texttt{THIS IS AN OLD GERMAN PROVERB.}
+                \end{quote}
+
+            \begin{notebox}[]
+                I used around 15 minutes to crack this cipher text manually.
             \end{notebox}
 
         \subsection{Caesar brute-force program}
@@ -202,6 +242,8 @@ VHFXULWB LV WKH ILUVW FDXVH RI PLVIRUWXQH.
                 \texttt{python3 code/caesar\_bruteforce.py 'YOUR CIPHERTEXT HERE'}
             \end{examplebox}
 
+    \pagebreak
+
     \section{Part II: Kasiski examination}
 
         Vigen\`ere is a polyalphabetic substitution: a repeating keyword chooses a different
@@ -227,6 +269,8 @@ VHFXULWB LV WKH ILUVW FDXVH RI PLVIRUWXQH.
             Kasiski turns Vigen\`ere into ``find $d$, then crack $d$ Caesar ciphers.''
             The hard polyalphabetic problem collapses once the period is known.
         \end{takeawaybox}
+
+    \pagebreak
 
     \section{Part III: Block-cipher modes on a bitmap}
 
@@ -297,6 +341,8 @@ openssl enc -aes-256-cbc -in org.x -out enc-cbc.x \
                 structure. Modes with an IV and chaining or feedback (CBC, CTR, GCM, \ldots)
                 should be used for real data, especially images and other patterned files.
             \end{takeawaybox}
+
+    \pagebreak
 
     \section{Part IV: Hashing, ciphers, and digital signatures}
 
