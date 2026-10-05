@@ -90,7 +90,7 @@
 
                 \begin{table}[h]
                     \centering
-                    \begin{tabular}{clr}
+                    \begin{tabular}{lc}
                         \toprule
                         Letter & Count \\
                         \midrule
@@ -166,6 +166,8 @@
                     \label{tab:first_sub_table}
                 \end{table}
 
+    \pagebreak
+
                 Therefore, we got the complete substitution table as
 
                 \begin{table}[h]
@@ -206,9 +208,11 @@
                     \texttt{THIS IS AN OLD GERMAN PROVERB.}
                 \end{quote}
 
-            \begin{notebox}[]
+            \begin{notebox}[Note]
                 I used around 15 minutes to crack this cipher text manually.
             \end{notebox}
+
+    \pagebreak
 
         \subsection{Caesar brute-force program}
 
@@ -216,7 +220,6 @@
             then prints the candidates from highest score to lowest.
 
             \begin{codeblock}[]{Python}{caesar\_bruteforce.py}
-                #!/usr/bin/env python3
                 import sys
 
                 WORDS = {"A", "AN", "THE", "IS", "OF", "TO", "IN", "THIS",
