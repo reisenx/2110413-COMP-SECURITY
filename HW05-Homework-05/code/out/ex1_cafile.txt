@@ -1,0 +1,165 @@
+﻿openssl : Connecting to 172.66.0.227
+At line:5 char:8
++ $req | openssl s_client -connect "${h}:443" -servername $h -CAfile ca ...
++        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (Connecting to 172.66.0.227:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+depth=3 C=US, O=Internet Security Research Group, CN=ISRG Root X1
+verify return:1
+depth=2 C=US, O=ISRG, CN=Root YR
+verify return:1
+depth=1 C=US, O=Let's Encrypt, CN=YR1
+verify return:1
+depth=0 CN=*.twitter.com
+verify return:1
+CONNECTED(000001FC)
+---
+Certificate chain
+ 0 s:CN=*.twitter.com
+   i:C=US, O=Let's Encrypt, CN=YR1
+   a:PKEY: RSA, 2048 (bit); sigalg: sha256WithRSAEncryption
+   v:NotBefore: Sep 28 19:44:38 2026 GMT; NotAfter: Dec 27 19:44:37 2026 GMT
+ 1 s:C=US, O=Let's Encrypt, CN=YR1
+   i:C=US, O=ISRG, CN=Root YR
+   a:PKEY: RSA, 2048 (bit); sigalg: sha256WithRSAEncryption
+   v:NotBefore: Sep  3 00:00:00 2025 GMT; NotAfter: Sep  2 23:59:59 2028 GMT
+ 2 s:C=US, O=ISRG, CN=Root YR
+   i:C=US, O=Internet Security Research Group, CN=ISRG Root X1
+   a:PKEY: RSA, 4096 (bit); sigalg: sha256WithRSAEncryption
+   v:NotBefore: May 13 00:00:00 2026 GMT; NotAfter: Sep  2 23:59:59 2032 GMT
+---
+Server certificate
+-----BEGIN CERTIFICATE-----
+MIIFHTCCBAWgAwIBAgISBRzRrvveid+1m0A3hqrCzwovMA0GCSqGSIb3DQEBCwUA
+MDMxCzAJBgNVBAYTAlVTMRYwFAYDVQQKEw1MZXQncyBFbmNyeXB0MQwwCgYDVQQD
+EwNZUjEwHhcNMjYwOTI4MTk0NDM4WhcNMjYxMjI3MTk0NDM3WjAYMRYwFAYDVQQD
+DA0qLnR3aXR0ZXIuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA
+kXnP+6SzsNxBU4uppRvtJwq/PK+Kq6RgeGfzMkhUyOsOvheEVgJogyrGm/YqPYZr
+5pk+5pLnEc5DUN0IcbNK8Evxqxcxc74+Lpqk1zNSKLmC4542fsKWO5AVU78XumPX
+f36O7IjFtsgEQpFug43YOVAZaQr4Clq0pNVPRXw0HcpjpSkp1WDLS5M7oj0fBvAk
+hsXUvvpeD1Iq1BgIzD/cjecLfvomaqjZbyTg3+Q5S40nYQyAELxO3uzEWzLw7z/7
+m0bt9acJCHKP+anx1o/s2mqMD83v+vk5YNicmOoEnUgR/Prf9rT2xtC6K11E0pCT
+UfnoJHUhxacDPMELEi4JqQIDAQABo4ICRDCCAkAwDgYDVR0PAQH/BAQDAgWgMBMG
+A1UdJQQMMAoGCCsGAQUFBwMBMAwGA1UdEwEB/wQCMAAwHQYDVR0OBBYEFIIq1qPY
+3iJrolrPoh1516plHNNKMB8GA1UdIwQYMBaAFB8vNb5GFILNQLGueSxVePr31Gj7
+MDMGCCsGAQUFBwEBBCcwJTAjBggrBgEFBQcwAoYXaHR0cDovL3lyMS5pLmxlbmNy
+Lm9yZy8wQgYDVR0RBDswOYINKi50d2l0dGVyLmNvbYIbY2RuLnN5bmRpY2F0aW9u
+LnR3aXR0ZXIuY29tggt0d2l0dGVyLmNvbTATBgNVHSAEDDAKMAgGBmeBDAECATAu
+BgNVHR8EJzAlMCOgIaAfhh1odHRwOi8veXIxLmMubGVuY3Iub3JnLzQ4LmNybDCC
+AQsGCisGAQQB1nkCBAIEgfwEgfkA9wB2ANgJVTuUT3r/yBYZb5RPhauw+Pxeh1Um
+DxXRLnK7RUsUAAABoOnB0HEAAAQDAEcwRQIhAO6NblDd6QkYLTIBdvQ2af7u9Aro
+kD6RhKoJr93plVPkAiBDdv8dLEcYr0PJWAAc5zmG7MdgeFmxGffD/eszu5kiIwB9
+ACbjZG5YaSEjvDQ/RyQ1mzeSzSRaiNgV05Mz/ZkYq0cjAAABoOnBxoEACAAABQBH
+iOXkBAMARjBEAiA96XlRnO8wIPrjS1/UqqKH2F5GbG8rnRYrSJXVT2R8uAIgfxEk
+eFc8Jb7uBxd4VD2rqjFkdnWWktaPu9zPjVgGvOAwDQYJKoZIhvcNAQELBQADggEB
+AA3HoZjU7HdtfdgEH85r5QibtjtuU9Tn1P9dFwcon8nDU9GZE0ThZO4TFuKQ3zED
+ix9PZi8jFfCBVy1ciIQNLF/nCXOOhqXzhFEAyUBypH1Th94e4vyumnTENZgCb1Xi
+++YrYaOYiLV2c00e2MoklTb8fYOZ/T1x4tDfMIN2laq1S+l4P5HFg6wAYhNExHc5
+QySGReGr+CChhJ9/rS1wj5u8ybwfpyLimOzwooJTyAWbn+gVw6INVMqWAkKK3ref
+8NSUw8KiEpwht16LR7oOEJxjcqYK9wPX9DWIBiJZEcwQz3X2WN5c3mp7CnBD/HoC
+Ylr2ljrCMmOfdlj19kEt+dQ=
+-----END CERTIFICATE-----
+subject=CN=*.twitter.com
+issuer=C=US, O=Let's Encrypt, CN=YR1
+---
+No client certificate CA names sent
+Peer signing digest: SHA256
+Peer signature type: rsa_pss_rsae_sha256
+Negotiated TLS1.3 group: X25519MLKEM768
+---
+SSL handshake has read 5680 bytes and written 1624 bytes
+Verification: OK
+---
+New, TLSv1.3, Cipher is TLS_AES_256_GCM_SHA384
+Protocol: TLSv1.3
+Server public key is 2048 bit
+This TLS version forbids renegotiation.
+Compression: NONE
+Expansion: NONE
+No ALPN negotiated
+Early data was not sent
+Verify return code: 0 (ok)
+---
+HTTP/1.1 400 Bad Request
+Server: cloudflare
+Date: Mon, 05 Oct 2026 13:57:59 GMT
+Content-Type: text/html
+Content-Length: 155
+Connection: close
+CF-RAY: -
+
+<html>
+<head><title>400 Bad Request</title></head>
+<body>
+<center><h1>400 Bad Request</h1></center>
+<hr><center>cloudflare</center>
+</body>
+</html>
+---
+Post-Handshake New Session Ticket arrived:
+SSL-Session:
+    Protocol  : TLSv1.3
+    Cipher    : TLS_AES_256_GCM_SHA384
+    Session-ID: B83841EEB1875D4EBCBE2E9FA7319457F3375CAC5293C8A2D7940FC846A7F3E0
+    Session-ID-ctx: 
+    Resumption PSK: BA5737D4DA4FDA2EB7376FCF78B3459D8937D2A4E46C9F6B4B3552832752C1A92799E2260020AB02BF098E7E7C4D81AF
+    PSK identity: None
+    PSK identity hint: None
+    SRP username: None
+    TLS session ticket lifetime hint: 64800 (seconds)
+    TLS session ticket:
+    0000 - 8f 17 1e 9e 1b d9 32 4f-71 d0 a3 a0 fa 11 be 77   ......2Oq......w
+    0010 - 78 0a e0 5e 15 a4 a9 2d-a4 6d 52 b1 e3 e9 63 73   x..^...-.mR...cs
+    0020 - 0f 1b 1a 15 5e 93 d7 4c-67 36 8e 43 c3 8f e2 d8   ....^..Lg6.C....
+    0030 - f7 0e f7 07 f0 63 31 ec-ef 74 5b 3e 92 31 52 b7   .....c1..t[>.1R.
+    0040 - b2 51 d4 89 ee ef 01 7d-a6 48 45 38 99 57 39 23   .Q.....}.HE8.W9#
+    0050 - 22 8e 67 67 6e c2 f6 6a-a5 45 a1 d5 6e 20 76 27   ".ggn..j.E..n v'
+    0060 - 7b 15 bc fd 5c ea 33 ab-1d 6c 16 a8 30 c9 6f 3e   {...\.3..l..0.o>
+    0070 - 6d 27 f4 32 3c f4 75 9b-88 53 59 84 32 76 7a 74   m'.2<.u..SY.2vzt
+    0080 - 8a 3c fa ef bb 7c 8d 7c-ce ea b4 13 0a 29 a9 1c   .<...|.|.....)..
+    0090 - 75 8b 71 0b ab 02 e8 73-de ff a2 c1 eb c7 3f 8f   u.q....s......?.
+    00a0 - ef 1a 80 83 d9 2d b6 fa-08 90 ed 41 bd 2a c1 ce   .....-.....A.*..
+    00b0 - 54 1b 0e 31 04 51 c8 64-4f 50 bf 62 3e ce 12 a6   T..1.Q.dOP.b>...
+
+    Start Time: 1791208679
+    Timeout   : 7200 (sec)
+    Verify return code: 0 (ok)
+    Extended master secret: no
+    Max Early Data: 0
+---
+read R BLOCK
+---
+Post-Handshake New Session Ticket arrived:
+SSL-Session:
+    Protocol  : TLSv1.3
+    Cipher    : TLS_AES_256_GCM_SHA384
+    Session-ID: 384AF0B421BB81371616765FD7EB213494D09D49DEBEBCB018D0975DF4CBE681
+    Session-ID-ctx: 
+    Resumption PSK: 8758A63732802A3CC22A523E1E80487D64C549F5D3E74BBB1BA2DD62965B2AD19B70D4E17B6E401F32E0E3FFA3DCADC9
+    PSK identity: None
+    PSK identity hint: None
+    SRP username: None
+    TLS session ticket lifetime hint: 64800 (seconds)
+    TLS session ticket:
+    0000 - 8f 17 1e 9e 1b d9 32 4f-71 d0 a3 a0 fa 11 be 77   ......2Oq......w
+    0010 - 59 56 27 dd 4c 22 51 6c-d6 f5 b8 ab 77 8a 39 a4   YV'.L"Ql....w.9.
+    0020 - 5d a1 79 4d e3 41 9b 85-7c ed f6 06 6d 80 fc 6d   ].yM.A..|...m..m
+    0030 - 4c 87 aa 6b 76 90 ab bc-46 75 9f a9 32 e5 54 d2   L..kv...Fu..2.T.
+    0040 - 21 22 7a 4d 38 fc e1 d4-a2 4f 6c 03 76 3f 0c 74   !"zM8....Ol.v?.t
+    0050 - fa ab 01 db ba d4 69 3f-23 39 03 a3 b3 b7 5d a4   ......i?#9....].
+    0060 - e1 f4 34 70 ed c4 bb 96-0e cf d0 45 92 9d 40 d2   ..4p.......E..@.
+    0070 - 07 3a d3 44 50 c6 90 f7-46 1c 99 d4 06 7c 9a 96   .:.DP...F....|..
+    0080 - 24 04 d8 3c fb 65 3b 99-09 9f ee 86 fa 23 26 5d   $..<.e;......#&]
+    0090 - d9 4f d4 25 15 d5 00 84-2b 64 c6 72 88 b8 88 65   .O.%....+d.r...e
+    00a0 - 69 38 97 fe 52 fe a5 c8-20 7f c6 0b a2 2e 42 1b   i8..R... .....B.
+    00b0 - 19 1b e8 0d 43 7e ff a2-c1 9a c4 57 f3 b1 5c 94   ....C~.....W..\.
+
+    Start Time: 1791208679
+    Timeout   : 7200 (sec)
+    Verify return code: 0 (ok)
+    Extended master secret: no
+    Max Early Data: 0
+---
+read R BLOCK
+closed

@@ -1,0 +1,164 @@
+﻿openssl : Connecting to 172.66.0.227
+At line:4 char:8
++ $req | openssl s_client -connect "${h}:443" -servername $h 2>&1 | Out ...
++        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (Connecting to 172.66.0.227:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+depth=2 C=US, O=ISRG, CN=Root YR
+verify error:num=20:unable to get local issuer certificate
+verify return:1
+depth=1 C=US, O=Let's Encrypt, CN=YR1
+verify return:1
+depth=0 CN=*.twitter.com
+verify return:1
+CONNECTED(00000214)
+---
+Certificate chain
+ 0 s:CN=*.twitter.com
+   i:C=US, O=Let's Encrypt, CN=YR1
+   a:PKEY: RSA, 2048 (bit); sigalg: sha256WithRSAEncryption
+   v:NotBefore: Sep 28 19:44:38 2026 GMT; NotAfter: Dec 27 19:44:37 2026 GMT
+ 1 s:C=US, O=Let's Encrypt, CN=YR1
+   i:C=US, O=ISRG, CN=Root YR
+   a:PKEY: RSA, 2048 (bit); sigalg: sha256WithRSAEncryption
+   v:NotBefore: Sep  3 00:00:00 2025 GMT; NotAfter: Sep  2 23:59:59 2028 GMT
+ 2 s:C=US, O=ISRG, CN=Root YR
+   i:C=US, O=Internet Security Research Group, CN=ISRG Root X1
+   a:PKEY: RSA, 4096 (bit); sigalg: sha256WithRSAEncryption
+   v:NotBefore: May 13 00:00:00 2026 GMT; NotAfter: Sep  2 23:59:59 2032 GMT
+---
+Server certificate
+-----BEGIN CERTIFICATE-----
+MIIFHTCCBAWgAwIBAgISBRzRrvveid+1m0A3hqrCzwovMA0GCSqGSIb3DQEBCwUA
+MDMxCzAJBgNVBAYTAlVTMRYwFAYDVQQKEw1MZXQncyBFbmNyeXB0MQwwCgYDVQQD
+EwNZUjEwHhcNMjYwOTI4MTk0NDM4WhcNMjYxMjI3MTk0NDM3WjAYMRYwFAYDVQQD
+DA0qLnR3aXR0ZXIuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA
+kXnP+6SzsNxBU4uppRvtJwq/PK+Kq6RgeGfzMkhUyOsOvheEVgJogyrGm/YqPYZr
+5pk+5pLnEc5DUN0IcbNK8Evxqxcxc74+Lpqk1zNSKLmC4542fsKWO5AVU78XumPX
+f36O7IjFtsgEQpFug43YOVAZaQr4Clq0pNVPRXw0HcpjpSkp1WDLS5M7oj0fBvAk
+hsXUvvpeD1Iq1BgIzD/cjecLfvomaqjZbyTg3+Q5S40nYQyAELxO3uzEWzLw7z/7
+m0bt9acJCHKP+anx1o/s2mqMD83v+vk5YNicmOoEnUgR/Prf9rT2xtC6K11E0pCT
+UfnoJHUhxacDPMELEi4JqQIDAQABo4ICRDCCAkAwDgYDVR0PAQH/BAQDAgWgMBMG
+A1UdJQQMMAoGCCsGAQUFBwMBMAwGA1UdEwEB/wQCMAAwHQYDVR0OBBYEFIIq1qPY
+3iJrolrPoh1516plHNNKMB8GA1UdIwQYMBaAFB8vNb5GFILNQLGueSxVePr31Gj7
+MDMGCCsGAQUFBwEBBCcwJTAjBggrBgEFBQcwAoYXaHR0cDovL3lyMS5pLmxlbmNy
+Lm9yZy8wQgYDVR0RBDswOYINKi50d2l0dGVyLmNvbYIbY2RuLnN5bmRpY2F0aW9u
+LnR3aXR0ZXIuY29tggt0d2l0dGVyLmNvbTATBgNVHSAEDDAKMAgGBmeBDAECATAu
+BgNVHR8EJzAlMCOgIaAfhh1odHRwOi8veXIxLmMubGVuY3Iub3JnLzQ4LmNybDCC
+AQsGCisGAQQB1nkCBAIEgfwEgfkA9wB2ANgJVTuUT3r/yBYZb5RPhauw+Pxeh1Um
+DxXRLnK7RUsUAAABoOnB0HEAAAQDAEcwRQIhAO6NblDd6QkYLTIBdvQ2af7u9Aro
+kD6RhKoJr93plVPkAiBDdv8dLEcYr0PJWAAc5zmG7MdgeFmxGffD/eszu5kiIwB9
+ACbjZG5YaSEjvDQ/RyQ1mzeSzSRaiNgV05Mz/ZkYq0cjAAABoOnBxoEACAAABQBH
+iOXkBAMARjBEAiA96XlRnO8wIPrjS1/UqqKH2F5GbG8rnRYrSJXVT2R8uAIgfxEk
+eFc8Jb7uBxd4VD2rqjFkdnWWktaPu9zPjVgGvOAwDQYJKoZIhvcNAQELBQADggEB
+AA3HoZjU7HdtfdgEH85r5QibtjtuU9Tn1P9dFwcon8nDU9GZE0ThZO4TFuKQ3zED
+ix9PZi8jFfCBVy1ciIQNLF/nCXOOhqXzhFEAyUBypH1Th94e4vyumnTENZgCb1Xi
+++YrYaOYiLV2c00e2MoklTb8fYOZ/T1x4tDfMIN2laq1S+l4P5HFg6wAYhNExHc5
+QySGReGr+CChhJ9/rS1wj5u8ybwfpyLimOzwooJTyAWbn+gVw6INVMqWAkKK3ref
+8NSUw8KiEpwht16LR7oOEJxjcqYK9wPX9DWIBiJZEcwQz3X2WN5c3mp7CnBD/HoC
+Ylr2ljrCMmOfdlj19kEt+dQ=
+-----END CERTIFICATE-----
+subject=CN=*.twitter.com
+issuer=C=US, O=Let's Encrypt, CN=YR1
+---
+No client certificate CA names sent
+Peer signing digest: SHA256
+Peer signature type: rsa_pss_rsae_sha256
+Negotiated TLS1.3 group: X25519MLKEM768
+---
+SSL handshake has read 5680 bytes and written 1624 bytes
+Verification error: unable to get local issuer certificate
+---
+New, TLSv1.3, Cipher is TLS_AES_256_GCM_SHA384
+Protocol: TLSv1.3
+Server public key is 2048 bit
+This TLS version forbids renegotiation.
+Compression: NONE
+Expansion: NONE
+No ALPN negotiated
+Early data was not sent
+Verify return code: 20 (unable to get local issuer certificate)
+---
+HTTP/1.1 400 Bad Request
+Server: cloudflare
+Date: Mon, 05 Oct 2026 13:57:57 GMT
+Content-Type: text/html
+Content-Length: 155
+Connection: close
+CF-RAY: -
+
+<html>
+<head><title>400 Bad Request</title></head>
+<body>
+<center><h1>400 Bad Request</h1></center>
+<hr><center>cloudflare</center>
+</body>
+</html>
+---
+Post-Handshake New Session Ticket arrived:
+SSL-Session:
+    Protocol  : TLSv1.3
+    Cipher    : TLS_AES_256_GCM_SHA384
+    Session-ID: DB8906E5A02CBD7C9418F95C99D80494865C331D76876F35E73BFE06231198BC
+    Session-ID-ctx: 
+    Resumption PSK: DE9A193CEE37EEF3546710EDE7637B79D119349435E92E4848230DF22E8C127253CAAE6CFC29C7B6982CDE41FF261D33
+    PSK identity: None
+    PSK identity hint: None
+    SRP username: None
+    TLS session ticket lifetime hint: 64800 (seconds)
+    TLS session ticket:
+    0000 - 8f 17 1e 9e 1b d9 32 4f-71 d0 a3 a0 fa 11 be 77   ......2Oq......w
+    0010 - 33 35 82 19 7d 47 fa 08-ae 5d a5 d8 88 85 ac e0   35..}G...]......
+    0020 - 00 8b 4d 4b 6d 35 b0 b7-46 e3 c6 a8 18 d0 ba 50   ..MKm5..F......P
+    0030 - 34 74 30 bc 55 8b 3e 4b-4e 20 ca 01 41 d7 77 84   4t0.U.>KN ..A.w.
+    0040 - 44 7c ea c6 43 e9 5a 74-c6 5c 8e aa 80 00 1b d6   D|..C.Zt.\......
+    0050 - 5f 1f 0d 77 45 1c ee ea-9d 29 d0 0f 55 07 a3 14   _..wE....)..U...
+    0060 - 46 41 a0 9b 75 14 61 cb-df 61 5f df d4 89 c7 d5   FA..u.a..a_.....
+    0070 - c3 ec 46 04 2f 03 e2 5b-2e 7c 04 fb a3 01 f8 d1   ..F./..[.|......
+    0080 - 06 96 47 ef cb fd 60 56-a3 aa 9b 73 71 38 1f 84   ..G...`V...sq8..
+    0090 - 74 fb cf 17 8c 88 a6 a8-ce bf 39 d0 5a 08 5f 6a   t.........9.Z._j
+    00a0 - 95 a3 ad 77 15 69 dc fe-1b c6 56 c8 5a 59 79 eb   ...w.i....V.ZYy.
+    00b0 - 30 97 df af 14 45 fc 83-b6 2b 94 35 99 3e 49 09   0....E...+.5.>I.
+
+    Start Time: 1791208677
+    Timeout   : 7200 (sec)
+    Verify return code: 20 (unable to get local issuer certificate)
+    Extended master secret: no
+    Max Early Data: 0
+---
+read R BLOCK
+---
+Post-Handshake New Session Ticket arrived:
+SSL-Session:
+    Protocol  : TLSv1.3
+    Cipher    : TLS_AES_256_GCM_SHA384
+    Session-ID: 3CED1A9D7191191A8ADBCC92F67620C7815F0E0E46A6B340472F78D02CA71CCA
+    Session-ID-ctx: 
+    Resumption PSK: 28F6E9B37D44C1E88AF39788373776A3A1C1AA35D9994F486585D78B156BED63D45A3B059BDA8C2B8390771D623D5D0C
+    PSK identity: None
+    PSK identity hint: None
+    SRP username: None
+    TLS session ticket lifetime hint: 64800 (seconds)
+    TLS session ticket:
+    0000 - 8f 17 1e 9e 1b d9 32 4f-71 d0 a3 a0 fa 11 be 77   ......2Oq......w
+    0010 - 03 45 09 f2 2d ee 68 64-32 de 42 00 96 14 19 c5   .E..-.hd2.B.....
+    0020 - 89 a4 98 3a 18 62 1e 24-4f 92 a9 1e f8 0c 37 38   ...:.b.$O.....78
+    0030 - a9 1a a8 ca 87 91 fb 23-83 c2 83 6d 90 7f 46 90   .......#...m..F.
+    0040 - 4a f6 2f 6c 57 72 98 a5-ed f8 be 88 15 36 f8 27   J./lWr.......6.'
+    0050 - 87 bf 6d 06 3c 91 fb 6c-da 1c 45 ec 2b 3c 92 1a   ..m.<..l..E.+<..
+    0060 - c5 4d 22 11 c4 5c fa 19-a7 74 6f 40 df 82 ba 45   .M"..\...to@...E
+    0070 - 3a c4 f7 f9 b2 e0 ff be-69 88 c4 5e b2 75 25 18   :.......i..^.u%.
+    0080 - 3a 93 58 12 b0 bb 6b ef-07 16 19 bd 89 e1 85 0b   :.X...k.........
+    0090 - 23 5f 4b 82 c6 9a e2 3b-d6 21 fb 9b 69 4d 69 9f   #_K....;.!..iMi.
+    00a0 - 10 7c 77 67 9a 2d 1e 10-51 22 14 20 cf 29 b0 2b   .|wg.-..Q". .).+
+    00b0 - 6a c3 4f 2b f7 58 54 bc-59 b9 03 dc f8 8b 24 08   j.O+.XT.Y.....$.
+
+    Start Time: 1791208677
+    Timeout   : 7200 (sec)
+    Verify return code: 20 (unable to get local issuer certificate)
+    Extended master secret: no
+    Max Early Data: 0
+---
+read R BLOCK
+closed

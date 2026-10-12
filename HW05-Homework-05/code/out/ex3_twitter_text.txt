@@ -1,0 +1,97 @@
+﻿Certificate:
+    Data:
+        Version: 3 (0x2)
+        Serial Number:
+            05:1c:d1:ae:fb:de:89:df:b5:9b:40:37:86:aa:c2:cf:0a:2f
+        Signature Algorithm: sha256WithRSAEncryption
+        Issuer: C=US, O=Let's Encrypt, CN=YR1
+        Validity
+            Not Before: Sep 28 19:44:38 2026 GMT
+            Not After : Dec 27 19:44:37 2026 GMT
+        Subject: CN=*.twitter.com
+        Subject Public Key Info:
+            Public Key Algorithm: rsaEncryption
+                Public-Key: (2048 bit)
+                Modulus:
+                    00:91:79:cf:fb:a4:b3:b0:dc:41:53:8b:a9:a5:1b:
+                    ed:27:0a:bf:3c:af:8a:ab:a4:60:78:67:f3:32:48:
+                    54:c8:eb:0e:be:17:84:56:02:68:83:2a:c6:9b:f6:
+                    2a:3d:86:6b:e6:99:3e:e6:92:e7:11:ce:43:50:dd:
+                    08:71:b3:4a:f0:4b:f1:ab:17:31:73:be:3e:2e:9a:
+                    a4:d7:33:52:28:b9:82:e3:9e:36:7e:c2:96:3b:90:
+                    15:53:bf:17:ba:63:d7:7f:7e:8e:ec:88:c5:b6:c8:
+                    04:42:91:6e:83:8d:d8:39:50:19:69:0a:f8:0a:5a:
+                    b4:a4:d5:4f:45:7c:34:1d:ca:63:a5:29:29:d5:60:
+                    cb:4b:93:3b:a2:3d:1f:06:f0:24:86:c5:d4:be:fa:
+                    5e:0f:52:2a:d4:18:08:cc:3f:dc:8d:e7:0b:7e:fa:
+                    26:6a:a8:d9:6f:24:e0:df:e4:39:4b:8d:27:61:0c:
+                    80:10:bc:4e:de:ec:c4:5b:32:f0:ef:3f:fb:9b:46:
+                    ed:f5:a7:09:08:72:8f:f9:a9:f1:d6:8f:ec:da:6a:
+                    8c:0f:cd:ef:fa:f9:39:60:d8:9c:98:ea:04:9d:48:
+                    11:fc:fa:df:f6:b4:f6:c6:d0:ba:2b:5d:44:d2:90:
+                    93:51:f9:e8:24:75:21:c5:a7:03:3c:c1:0b:12:2e:
+                    09:a9
+                Exponent: 65537 (0x10001)
+        X509v3 extensions:
+            X509v3 Key Usage: critical
+                Digital Signature, Key Encipherment
+            X509v3 Extended Key Usage: 
+                TLS Web Server Authentication
+            X509v3 Basic Constraints: critical
+                CA:FALSE
+            X509v3 Subject Key Identifier: 
+                82:2A:D6:A3:D8:DE:22:6B:A2:5A:CF:A2:1D:79:D7:AA:65:1C:D3:4A
+            X509v3 Authority Key Identifier: 
+                1F:2F:35:BE:46:14:82:CD:40:B1:AE:79:2C:55:78:FA:F7:D4:68:FB
+            Authority Information Access: 
+                CA Issuers - URI:http://yr1.i.lencr.org/
+            X509v3 Subject Alternative Name: 
+                DNS:*.twitter.com, DNS:cdn.syndication.twitter.com, DNS:twitter.com
+            X509v3 Certificate Policies: 
+                Policy: 2.23.140.1.2.1
+            X509v3 CRL Distribution Points: 
+                Full Name:
+                  URI:http://yr1.c.lencr.org/48.crl
+
+            CT Precertificate SCTs: 
+                Signed Certificate Timestamp:
+                    Version   : v1 (0x0)
+                    Log ID    : D8:09:55:3B:94:4F:7A:FF:C8:16:19:6F:94:4F:85:AB:
+                                B0:F8:FC:5E:87:55:26:0F:15:D1:2E:72:BB:45:4B:14
+                    Timestamp : Sep 28 20:43:08.273 2026 GMT
+                    Extensions: none
+                    Signature : ecdsa-with-SHA256
+                                30:45:02:21:00:EE:8D:6E:50:DD:E9:09:18:2D:32:01:
+                                76:F4:36:69:FE:EE:F4:0A:E8:90:3E:91:84:AA:09:AF:
+                                DD:E9:95:53:E4:02:20:43:76:FF:1D:2C:47:18:AF:43:
+                                C9:58:00:1C:E7:39:86:EC:C7:60:78:59:B1:19:F7:C3:
+                                FD:EB:33:BB:99:22:23
+                Signed Certificate Timestamp:
+                    Version   : v1 (0x0)
+                    Log ID    : 26:E3:64:6E:58:69:21:23:BC:34:3F:47:24:35:9B:37:
+                                92:CD:24:5A:88:D8:15:D3:93:33:FD:99:18:AB:47:23
+                    Timestamp : Sep 28 20:43:05.729 2026 GMT
+                    Extensions: 00:00:05:00:47:88:E5:E4
+                    Signature : ecdsa-with-SHA256
+                                30:44:02:20:3D:E9:79:51:9C:EF:30:20:FA:E3:4B:5F:
+                                D4:AA:A2:87:D8:5E:46:6C:6F:2B:9D:16:2B:48:95:D5:
+                                4F:64:7C:B8:02:20:7F:11:24:78:57:3C:25:BE:EE:07:
+                                17:78:54:3D:AB:AA:31:64:76:75:96:92:D6:8F:BB:DC:
+                                CF:8D:58:06:BC:E0
+    Signature Algorithm: sha256WithRSAEncryption
+    Signature Value:
+        0d:c7:a1:98:d4:ec:77:6d:7d:d8:04:1f:ce:6b:e5:08:9b:b6:
+        3b:6e:53:d4:e7:d4:ff:5d:17:07:28:9f:c9:c3:53:d1:99:13:
+        44:e1:64:ee:13:16:e2:90:df:31:03:8b:1f:4f:66:2f:23:15:
+        f0:81:57:2d:5c:88:84:0d:2c:5f:e7:09:73:8e:86:a5:f3:84:
+        51:00:c9:40:72:a4:7d:53:87:de:1e:e2:fc:ae:9a:74:c4:35:
+        98:02:6f:55:e2:fb:e6:2b:61:a3:98:88:b5:76:73:4d:1e:d8:
+        ca:24:95:36:fc:7d:83:99:fd:3d:71:e2:d0:df:30:83:76:95:
+        aa:b5:4b:e9:78:3f:91:c5:83:ac:00:62:13:44:c4:77:39:43:
+        24:86:45:e1:ab:f8:20:a1:84:9f:7f:ad:2d:70:8f:9b:bc:c9:
+        bc:1f:a7:22:e2:98:ec:f0:a2:82:53:c8:05:9b:9f:e8:15:c3:
+        a2:0d:54:ca:96:02:42:8a:de:b7:9f:f0:d4:94:c3:c2:a2:12:
+        9c:21:b7:5e:8b:47:ba:0e:10:9c:63:72:a6:0a:f7:03:d7:f4:
+        35:88:06:22:59:11:cc:10:cf:75:f6:58:de:5c:de:6a:7b:0a:
+        70:43:fc:7a:02:62:5a:f6:96:3a:c2:32:63:9f:76:58:f5:f6:
+        41:2d:f9:d4

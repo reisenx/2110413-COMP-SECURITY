@@ -1,0 +1,8 @@
+﻿twitter.com                              [root store only ] -> FAILED (unable to get local issuer certificate)
+twitter.com                              [with intermediate] -> Certificate verified
+google.com                               [root store only ] -> FAILED (unable to get local issuer certificate)
+google.com                               [with intermediate] -> Certificate verified
+www.chula.ac.th                          [root store only ] -> FAILED (unable to get local issuer certificate)
+www.chula.ac.th                          [with intermediate] -> Certificate verified
+classdeedee.cloud.cp.eng.chula.ac.th     [root store only ] -> FAILED (unable to get local issuer certificate)
+classdeedee.cloud.cp.eng.chula.ac.th     [with intermediate] -> Certificate verified
